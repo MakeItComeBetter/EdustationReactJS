@@ -1,0 +1,55 @@
+.community {
+  display: flex;
+  flex-wrap: wrap;
+  overflow: scroll;
+  padding: 5px;
+
+  &__widget {
+    position: relative;
+    height: 250px;
+    object-fit:cover;
+    border-radius: 15px;
+    background-size: cover;
+    background-position: center;
+    background-attachment: local;
+    margin: 3px;
+    
+    &_actions {
+      color: #fff!important;
+      position: absolute;
+      top: 12px;
+      right: 0;
+      
+      button {
+        color: black!important;
+        width: 35px!important;
+        height: 35px!important;
+        background: #fff!important;
+        
+
+      }
+      
+    }
+
+    image {
+      width: 100%;
+      height: auto;
+    }
+    &_avt {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+
+    }
+    &_in4 {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      padding: 10px;
+      color: #fff;
+      text-align: center;
+      font-weight: bold;
+    }
+  }
+}

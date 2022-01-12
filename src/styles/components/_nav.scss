@@ -1,0 +1,85 @@
+.nav {
+  z-index: 10;
+  background-color: #fff;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  font-size: 18px;
+  border-bottom: 1px solid #cbc8c8;
+  padding-bottom: 5px;
+  position: sticky;
+  top: 0;
+
+  @include mq($mobile) {
+    font-size: 15px;
+  }
+  // background-color: red;
+
+  &__logo {
+    display: flex;
+    // align-items: center;
+    justify-content: center;
+    align-items: center;
+    font-weight: bold;
+    color: #000000;
+    font-size: 16px;
+    text-transform: uppercase;
+    a {
+      color: #000000;
+    }
+  }
+
+  &__links {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+    // align-items: center;
+  }
+  &__link a {
+    color: black;
+    @include mq($desktop){
+      font-size: 13px;
+    }
+  }
+
+  &__user_actions {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+    align-items: center;
+  }
+  &__search {
+    display: flex;
+    align-items: center;
+    // transition: width 2s;
+    transition: width 300ms ease;
+
+    :focus {
+      margin-left: 5px;
+      
+    }
+    input {
+      width: 100%;
+      padding: 4px;
+      border: 1px solid black;
+      border-radius: 5px;
+      padding-left: 10px;
+    }
+  }
+  &__cart {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  &__start_btn {
+    border-radius: 15px;
+    color: #fff;
+  }
+}
+.MuiBadge-badge {
+  font-size: 10px!important;
+  min-width: 15px!important;
+  height: 18px!important;
+  padding: 0 6px!important;
+}

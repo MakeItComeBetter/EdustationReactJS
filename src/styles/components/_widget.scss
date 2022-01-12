@@ -1,0 +1,118 @@
+.widget {
+  // width: 100%;
+  padding: 10px;
+  margin: 5px;
+  border-radius: 11px;
+  background-color: #e4e1e7;
+  color: #555;
+  font-weight: bold;
+  text-overflow: ellipsis;
+
+  &_header {
+    display: flex;
+    justify-content: right;
+    align-items: center;
+    
+  }
+
+  &_spinner{
+    padding: 12px;
+    border: 1px solid black;
+    border-radius: 50%;
+    width: 13%;
+    text-align: center;
+    font-size: 14px;
+    margin: 0  auto ;
+  }
+
+  &_footer {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    padding: 5px 1px 1px 2px;
+
+    &_end {
+      padding: 7px;
+      background-color: #bbb8be;
+      border-radius: 5px;
+    }
+    &_content {
+      display: flex;
+      flex-direction: column;
+      padding-left: 4px;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      overflow: hidden;
+
+      span {
+        font-size: 14px;
+      }
+    }
+
+
+  }
+}
+
+.widget1 {
+  color: $text_color;
+}
+
+.widget2 {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  background-color: blanchedalmond;
+  padding: 5px;
+  margin: 5px;
+  border-radius: 15px;
+  text-decoration: none;
+  color: $text_color;
+
+  &_icon {
+    padding: 6px
+  }
+
+  &_content {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    margin: 5px;
+
+    span {
+      font-weight: bold;
+      margin: 2px 0 2px 0;
+    }
+  }
+  &_progress{
+    padding: 6px;
+  }
+}
+
+
+
+.audio {
+
+
+  &_container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #edd106;
+    padding: 6px 10px 6px 10px;
+    margin: 5px;
+    border-radius: 15px;
+    color: #fff;
+    font-weight: bold;
+    line-height: 1.8;
+  }
+
+  &_btn {
+    border: 0;
+    border-radius: 8px;
+    background-color: #fff!important;
+  }
+  &_track {
+    display: flex;
+    
+  }
+}

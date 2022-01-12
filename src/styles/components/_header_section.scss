@@ -1,0 +1,23 @@
+.header_section {
+  height: 45px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+
+  &_first {
+    width: 20%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  &_second {
+    width: 40%;
+    text-align: center;
+  }
+  &_three {
+    width: 20%;
+    display: flex;
+    justify-content: center;
+  }
+}

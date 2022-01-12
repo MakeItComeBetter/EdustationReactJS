@@ -1,25 +1,133 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useCallback, useEffect } from "react";
+import PublicRoute from "./layouts/PublicRoute";
+import { HashRouter, Switch } from 'react-router-dom';
+import { routes } from "./routes";
+import { connect } from "react-redux";
+import { authenticate } from './actions/UserActions';
+import { collection, limit, onSnapshot, orderBy, query, where } from "firebase/firestore";
+import { getFS } from "./firebase";
+import { useDispatch } from 'react-redux';
+import Snackbar from '@mui/material/Snackbar';
+import Slide from '@mui/material/Slide';
 
-function App() {
+import {
+  // UPDATE_NOTIFICATIONS,
+  // UPDATE_NEW_ROOM,
+  SEND_MESSAGE_SUCCESS,
+  OFF_SNACK,
+  UPDATE_FRIENDS,
+  PUSH_NEW_NOTIFICATION
+} from './constance/ActionTypes';
+
+function App({ authenticate, userId, snackNotify }) {
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    authenticate();
+  }, [authenticate])
+
+  useEffect(() => {
+    // subscribe push new notifications
+    const unsubscribeNotifications = onSnapshot(collection(getFS, `notifications/${userId}/messages`), (snapshot) => {
+      snapshot.docChanges().forEach((change) => {
+
+        if (change.type === 'added') {
+          dispatch({ type: PUSH_NEW_NOTIFICATION, payload: { newNotification: change.doc.data() } })
+        }
+      })
+    })
+
+    // subscribe push new message
+    const q = query(collection(getFS, `chats`), where('members', 'array-contains', `${userId}`), orderBy('createdAt', 'desc'))
+    const unsubscribeRooms = onSnapshot(q, (snap) => {
+
+
+      snap.docChanges().forEach((change) => {
+        if (change.type === 'added') {
+          let roomId = change.doc.id;
+          onSnapshot(query(collection(getFS, `chats/${roomId}/messages`), orderBy('createdAt', 'desc'), limit(1)), (snap) => {
+            const lastMessage = snap.docs[snap.docs.length - 1].data();
+            dispatch({ type: SEND_MESSAGE_SUCCESS, payload: { message: lastMessage, room: roomId } })
+          })
+        }
+      })
+    })
+
+    // subscribe current user data changes
+
+    // FRIENDS
+    const unsubscribeUserChanges = onSnapshot(collection(getFS, `users/${userId}/friends`), (snap) => {
+      const friends = [];
+      snap.forEach((doc) => {
+        friends.push(doc.data());
+      })
+      dispatch({ type: UPDATE_FRIENDS, payload: { friends } })
+    })
+
+
+
+
+    return () => {
+      unsubscribeRooms();
+      unsubscribeNotifications();
+      unsubscribeUserChanges();
+    }
+
+  }, [dispatch, userId])
+
+  const renderRoutes = useCallback(routes => {
+    let result = null;
+    if (routes.length > 0) {
+      result = routes.map((route, index) => {
+        const { path, exact, layout, component } = route;
+
+        return (
+          <PublicRoute
+            key={index}
+            path={path}
+            exact={exact}
+            layout={layout}
+            component={component}
+          />
+        );
+      });
+    }
+    return <Switch>{result}</Switch>;
+  }, []);
+
+
+  function TransitionUp(props) {
+    return <Slide {...props} direction="up" />;
+  }
+
+  const handleOffSnack = () => {
+    setTimeout(() => dispatch({ type: OFF_SNACK}), 1500)
+  }
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <HashRouter basename="/">
+      <div className="App">
+        {/* <HeaderContainer /> */}
+        {renderRoutes(routes)}
+      </div>
+      {
+        snackNotify?.on && snackNotify?.message ?
+        <Snackbar
+        open={snackNotify?.on && snackNotify?.message ? true : false}
+        onClose={handleOffSnack}
+        TransitionComponent={TransitionUp}
+        message={snackNotify?.message}
+        key={'up'}
+      /> : ""
+      }
+    </HashRouter>
   );
 }
+const mapStateToProps = state => {
+  return {
+    ...state.app,
+  };
+};
 
-export default App;
+
+export default connect(mapStateToProps, { authenticate })(App);

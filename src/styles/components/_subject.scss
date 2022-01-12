@@ -1,0 +1,18 @@
+.subject {
+
+  &__process {
+    display: flex;
+    overflow-x: scroll;
+
+    
+  }
+  &__practices {
+    display: flex;
+    flex-direction: column!important;
+  }
+}
+
+.subject__process::-webkit-scrollbar {
+  display: none;
+  background-color: transparent;
+}

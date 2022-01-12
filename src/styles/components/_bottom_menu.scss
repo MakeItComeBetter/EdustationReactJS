@@ -1,0 +1,17 @@
+.bottom__menu {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 2px 2px 8px 2px;
+  height: 40px;
+  // border-top: 1px solid #cbc8c8;
+  margin-bottom: 6px;
+
+  &_list {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    align-items: center;
+  }
+}

@@ -1,0 +1,34 @@
+.notifications {
+  &__container {
+    overflow: auto;
+    // display: flex;
+    // flex-direction: column-reverse!important;
+  }
+
+  &__widget {
+
+    &_main {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    &_actions {
+      padding: 5px;
+      display: flex;
+      flex-direction: row;
+      justify-content: space-evenly;
+    }
+    
+    &_contents {
+      padding: 5px;
+      span {
+        font-weight: bold;
+      }
+
+      display: flex;
+      flex-direction: column;
+      text-overflow: ellipsis;
+    }
+  }
+}

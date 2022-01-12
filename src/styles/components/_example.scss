@@ -1,0 +1,17 @@
+.example {
+
+  &_stack {
+    display: flex;
+    flex-wrap: wrap;
+    padding: 5px;
+
+    div {
+      margin: 2px 1px 5px 2px;
+    }
+  }
+
+  a {
+    text-decoration: none;
+    color: $text_color;
+  }
+}

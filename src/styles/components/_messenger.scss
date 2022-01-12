@@ -1,0 +1,58 @@
+.messenger {
+  &__container {
+    padding: 5px;
+    overflow: auto;
+    display: flex;
+    flex-direction: column-reverse!important;
+  }
+
+  &__widget {
+    display: flex;
+    flex-direction: row;
+    // justify-items: ;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+
+    &_main {
+      width: 70%;
+      display: flex;
+      text-align: center;
+      align-items: center;
+    }
+    // &_actions {
+
+    // }
+  }
+
+  &__content {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    padding: 5px;
+  }
+
+  &__bottom {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    display: flex;
+    padding: 10px;
+    align-items: center;
+    justify-content: space-around;
+  }
+
+  &__friends {
+    display: flex;
+    overflow-x: scroll;
+  }
+
+  &__friend {
+    padding: 5px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+}
+

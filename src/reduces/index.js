@@ -1,0 +1,21 @@
+import { combineReducers } from 'redux';
+// import GamesReducer from './GamesReducer';
+// import RouterReducer from './RouterReducer';
+import AppReducer from './AppReducer';
+import UserReducer from './UserReducer';
+import ExampleReducer from './ExampleReducer';
+import MessengerReducer from './MessengerReducer';
+import NotificationReducer from './NotificationReducer';
+
+
+// import profileReducer from './ProfileReducer';
+
+export default combineReducers({
+  // games: GamesReducer,
+  // router: RouterReducer,
+  app: AppReducer,
+  user: UserReducer,
+  exam: ExampleReducer,
+  messenger: MessengerReducer,
+  notification: NotificationReducer
+});
