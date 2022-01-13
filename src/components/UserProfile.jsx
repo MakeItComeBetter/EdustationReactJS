@@ -108,46 +108,48 @@ const UserProfile = ({ currentUser, logOut, uploadAvatar, updateCurrentUser, del
         </Link>
         <span>Home</span>
       </Grid>
-      <Grid item xs={12} sm={3} className="user__profile">
-        <input type="file" id="icon-button-file" onChange={(e) => handleSetFile(e)} style={{ display: 'none' }} />
-        <Badge badgeContent={
-          <label htmlFor="icon-button-file">
-            <Avatar sx={{
-              width: 40,
-              height: 40
-            }}> <FontAwesomeIcon icon={faCamera} color='black' /></Avatar>
-          </label>
-        }
-          overlap="circular"
-          anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
-        >
-          <Avatar alt={currentUser.username} sx={{
-            width: 100,
-            height: 100
-          }} src={currentUser.photoURL ? currentUser.photoURL : "https://i.pinimg.com/originals/9d/ba/20/9dba20a19c514660b135f1dd831102e2.jpg"} />
-        </Badge>
-        <div>
-          {
-            onChangeName ?
-              <div>
-                <input type='text' placeholder='Enter new your display name' onBlur={() => setOnChangeName(false)} />
-              </div>
-              :
-              <strong onClick={() => setOnChangeName(true)}>
-                <h3>{
-                  currentUser.displayName || currentUser.username || "Unknown"
-                }</h3>
-              </strong>
+      <Grid item xs={12} sm={3} >
+        <div className="user__profile">
+          <input type="file" id="icon-button-file" onChange={(e) => handleSetFile(e)} style={{ display: 'none' }} />
+          <Badge badgeContent={
+            <label htmlFor="icon-button-file">
+              <Avatar sx={{
+                width: 40,
+                height: 40
+              }}> <FontAwesomeIcon icon={faCamera} color='black' /></Avatar>
+            </label>
           }
-          <p>{currentUser.uid}</p>
-          <small>{currentUser.email}</small>
-          <IconButton onClick={() => logOut()}><FontAwesomeIcon icon={faSignOutAlt} /></IconButton>
-        </div>
-        {
-          currentUser.photoURL && currentUser.displayName ?
-            <button type="button" onClick={() => addUserToPublic(currentUser) & setMakePublic(makePublic === false ? true : true)}>{makePublic ? "Update Public" : "Public Profile"}</button> : ""
-        }
+            overlap="circular"
+            anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+          >
+            <Avatar alt={currentUser.username} sx={{
+              width: 100,
+              height: 100
+            }} src={currentUser.photoURL ? currentUser.photoURL : "https://i.pinimg.com/originals/9d/ba/20/9dba20a19c514660b135f1dd831102e2.jpg"} />
+          </Badge>
+          <div>
+            {
+              onChangeName ?
+                <div>
+                  <input type='text' placeholder='Enter new your display name' onBlur={() => setOnChangeName(false)} />
+                </div>
+                :
+                <strong onClick={() => setOnChangeName(true)}>
+                  <h3>{
+                    currentUser.displayName || currentUser.username || "Unknown"
+                  }</h3>
+                </strong>
+            }
+            <p>{currentUser.uid}</p>
+            <small>{currentUser.email}</small>
+            <IconButton onClick={() => logOut()}><FontAwesomeIcon icon={faSignOutAlt} /></IconButton>
+          </div>
+          {
+            currentUser.photoURL && currentUser.displayName ?
+              <button type="button" onClick={() => addUserToPublic(currentUser) & setMakePublic(makePublic === false ? true : true)}>{makePublic ? "Update Public" : "Public Profile"}</button> : ""
+          }
 
+        </div>
       </Grid>
       <Grid item xs={12} sm={3}>
         <Radar

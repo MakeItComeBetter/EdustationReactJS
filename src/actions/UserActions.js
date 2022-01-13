@@ -6,7 +6,8 @@ import {
   FETCH_PUBLIC_USER,
   ADD_USER_TO_APP,
   UNFRIEND,
-  ON_SNACK
+  ON_SNACK,
+  
 } from '../constance/ActionTypes';
 import { BASE_PATH } from '../constance/urlPath';
 import {
@@ -14,16 +15,20 @@ import {
   getFS,
   // firebaseApp
 } from '../firebase';
-import { collection, deleteDoc, getDocs, query, where } from 'firebase/firestore';
+import { collection, 
+  deleteDoc, 
+  getDocs, 
+  query, 
+  where } from 'firebase/firestore';
 
 import {
   signInWithEmailAndPassword,
-  isSignInWithEmailLink,
-  signInWithEmailLink,
   sendEmailVerification,
   fetchSignInMethodsForEmail,
   createUserWithEmailAndPassword,
-  updateProfile
+  updateProfile,
+  sendPasswordResetEmail,
+  deleteUser
 } from "firebase/auth";
 
 const loginSuccess = user => ({ type: LOGIN_SUCCESS, payload: { user } });
@@ -65,12 +70,16 @@ export const loginFirebase = (navigator, email, password) => dispatch => {
     })
 }
 
+export const deleteAccount = (navigator, currentUser) => {
+  return deleteUser(currentUser)
+    .then(() => {
+      navigator?.push(BASE_PATH);
+    })
+}
+
 
 
 export const signUpFirebase = (navigator, username, email, password) => async dispatch => {
-
-  
-
 
   // check mail taken
   const res = await fetchSignInMethodsForEmail(auth, email)
@@ -86,32 +95,48 @@ export const signUpFirebase = (navigator, username, email, password) => async di
       updateUser({ displayName: username })
         .then(() => {
 
-          
+          const actionCodeSettings = {
+            // URL you want to redirect back to. The domain (www.example.com) for this
+            // URL must be in the authorized domains list in the Firebase Console.
+            url: `https://edustation-2f482.web.app/#/`,
+            // This must be true.
+            handleCodeInApp: true,
+            // dynamicLinkDomain: 'example.page.link'
+          };
 
-          sendEmailVerification(user)
+          sendEmailVerification(user, actionCodeSettings)
             .then(() => {
-              dispatch({ type: ON_SNACK, payload: { message: "Please check mail and verify is you before sign in.", on: true } })
-              if (isSignInWithEmailLink(auth, window.location.href)) {
-
-                // The client SDK will parse the code from the link for you.
-                signInWithEmailLink(auth, email, window.location.href)
-                  .then((res) => {
-                    if (res?.user){
-                      dispatch(loginSuccess(user));
-                      navigator?.push(BASE_PATH);
-                    }else {
-
-                    }
-                  })
-              }
+              window.localStorage.setItem("emailForSignIn", email);
+              dispatch({ type: ON_SNACK, payload: { message: "Please check mail and sure verify is you before sign in.", on: true } });
+              setTimeout(() => {
+                window.close()
+              }, 5000)
             })
-
         })
+    })
+}
+
+export const sentForgotPassword = (email) => dispatch => {
+  const actionCodeSettings = {
+    // URL you want to redirect back to. The domain (www.example.com) for this
+    // URL must be in the authorized domains list in the Firebase Console.
+    url: `https://edustation-2f482.web.app/#/`,
+    // This must be true.
+    handleCodeInApp: true,
+    // dynamicLinkDomain: 'example.page.link'
+  };
+  return sendPasswordResetEmail(auth, email, actionCodeSettings)
+    .then(() => {
+      dispatch({ type: ON_SNACK, payload: { message: "Please check mail and get new password.", on: true } });
+      // setTimeout(() => {
+      //   window.close()
+      // }, 5000)
     })
 }
 
 export const updateUser = (attributes) => {
   const { currentUser } = auth;
+  
   if (currentUser) {
     return updateProfile(currentUser, { ...attributes })
   } else {

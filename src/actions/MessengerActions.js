@@ -9,16 +9,18 @@ import {
   doc,
   where,
   setDoc,
-  deleteDoc
+  deleteDoc,
+  updateDoc
 } from 'firebase/firestore';
 import {
   FETCH_MORE_MESSAGES,
   UPDATE_MESSENGER,
   UPDATE_CURRENT_ROOM,
-  UPDATE_MESSAGES,
+  INIT_MESSAGES,
   CLEAR_MESSAGES,
   FETCH_MORE_ROOMS,
-  DELETE_ROOM
+  DELETE_ROOM,
+  CHECKED_ALL_MSGS
 } from '../constance/ActionTypes';
 import { getFS } from "../firebase";
 
@@ -35,17 +37,21 @@ function createId(length) {
 }
 
 export const initMessages = (roomId) => async dispatch => {
+
+  if (!roomId) return;
   const currentRoom = await getDoc(doc(getFS, `chats/${roomId}`));
-  dispatch({type: UPDATE_CURRENT_ROOM, payload: {currentRoom: currentRoom.data()}})
+  dispatch({ type: UPDATE_CURRENT_ROOM, payload: { currentRoom: currentRoom.data() } })
   dispatch({ type: CLEAR_MESSAGES })
   if (!roomId) return;
-  let msgs = [];
   const first = query(collection(getFS, `chats/${roomId}/messages`), orderBy('createdAt', 'desc'), limit(15));
   const docSnapshots = await getDocs(first);
   const lastVisible = docSnapshots.docs[docSnapshots.docs.length - 1];
   if (!lastVisible) return;
-  docSnapshots.forEach((e) => msgs.push(e.data()));
-  dispatch({ type: UPDATE_MESSAGES, payload: { messages: msgs, lastVisible: lastVisible } });
+  const msgs = [];
+  docSnapshots.docs.map((e) => 
+    msgs.push(e.data()));
+
+  dispatch({ type: INIT_MESSAGES, payload: { messages: msgs, lastVisible: lastVisible } });
 
 }
 
@@ -69,6 +75,7 @@ export const createNewMessage = (roomId, message, authorId) => dispatch => {
   let newMsgId = createId(10);
 
   let newMsg = {
+    id: newMsgId,
     message: message,
     author: authorId,
     checked: false,
@@ -90,6 +97,26 @@ export const createNewMessage = (roomId, message, authorId) => dispatch => {
     })
     .catch((e) => alert(e.message));
 
+}
+
+export const checkedAllMsgs = (currentUser, roomId, currentMessages = []) => dispatch => {
+  
+  if (!currentUser || !roomId || currentMessages?.filter((e) => e?.checked === false)?.length === 0) return;
+
+  const q = query(collection(getFS, `chats/${roomId}/messages`), where('author', '!=', `${currentUser?.uid}`), where('checked', '==', false));
+  getDocs(q)
+    .then((res) => {
+      res.docs.forEach((e) => {
+        updateDoc(doc(getFS, `chats/${roomId}/messages/${e?.id}`), {
+          ...e.data(),
+          checked: true
+        }).then(() => {
+          console.log(`seen ${e.id}`)
+        })
+      })
+    }).then(() => {
+      dispatch({ type: CHECKED_ALL_MSGS })
+    })
 }
 
 export const createRoomByMembers = (navigate, authorId, membersDetails = [], members = []) => dispatch => {
@@ -119,10 +146,10 @@ export const createRoomByMembers = (navigate, authorId, membersDetails = [], mem
           membersDetails: membersDetails
         }
         setDoc(doc(getFS, `chats`, newRoomId), currentRoom)
-        .then(() => {
-          dispatch({ type: UPDATE_CURRENT_ROOM, payload: { currentRoom: currentRoom} });
-          navigate?.push(`/messages/${newRoomId}`);
-        })
+          .then(() => {
+            dispatch({ type: UPDATE_CURRENT_ROOM, payload: { currentRoom: currentRoom } });
+            navigate?.push(`/messages/${newRoomId}`);
+          })
       }
 
     })
@@ -134,14 +161,14 @@ export const createRoomByMembers = (navigate, authorId, membersDetails = [], mem
 export const initRooms = (currentUser) => dispatch => {
 
   const first = query(collection(getFS, `chats`), where('members', 'array-contains', `${currentUser?.uid}`),
-  orderBy('createdAt', 'desc'), limit(10));
+    orderBy('createdAt', 'desc'), limit(10));
   getDocs(first)
     .then((res) => {
-      const rooms =[];
+      const rooms = [];
       res.forEach((e) => {
         rooms.push(e.data())
       });
-      dispatch({type: UPDATE_MESSENGER, payload: {rooms: rooms, lastVisible: res.docs[res.docs.length - 1]}})
+      dispatch({ type: UPDATE_MESSENGER, payload: { rooms: rooms, lastVisible: res.docs[res.docs.length - 1] } })
     })
     .catch((e) => {
       console.log(e.message)
@@ -150,13 +177,13 @@ export const initRooms = (currentUser) => dispatch => {
 }
 
 export const fetchMoreRooms = (currentUser, lastVisibleRoomState = null, currentRooms = []) => async dispatch => {
-  const next = query(collection(getFS, `chats`), where('members', 'array-contains', `${currentUser?.uid}`, 
-  orderBy('createdAt', 'desc'), 
-  startAfter(lastVisibleRoomState),
-  limit(5)))
+  const next = query(collection(getFS, `chats`), where('members', 'array-contains', `${currentUser?.uid}`,
+    orderBy('createdAt', 'desc'),
+    startAfter(lastVisibleRoomState),
+    limit(5)))
   let rooms = [];
   if (!currentUser || !lastVisibleRoomState || currentRooms.length === 0) return true;
-  
+
   const nexDocSnapshots = await getDocs(next);
   const newLastVisible = nexDocSnapshots.docs[nexDocSnapshots.docs.length - 1];
   if (!newLastVisible) return true;
@@ -168,6 +195,6 @@ export const fetchMoreRooms = (currentUser, lastVisibleRoomState = null, current
 export const deleteRoom = (roomId) => dispatch => {
   deleteDoc(doc(getFS, `chats/${roomId}`))
     .then(() => {
-      dispatch({type: DELETE_ROOM, payload: {roomId}})
+      dispatch({ type: DELETE_ROOM, payload: { roomId } })
     })
 }

@@ -20,7 +20,7 @@ const Login = ({ loginFirebase, signUpFirebase }) => {
   const [sendForm, setSendForm] = useState({
     user: {
       username: "",
-      email: "",
+      email: window.localStorage.getItem('emailForSignIn'),
       password: "",
       ip_address: ip
     }
@@ -39,6 +39,22 @@ const Login = ({ loginFirebase, signUpFirebase }) => {
 
     }
   }, [checkError, ip])
+
+  // useEffect(() => {
+  //   let userEmail = window.localStorage.getItem('email');
+
+  //   if (userEmail) {
+  //     let newForm = {
+  //       ...sendForm,
+  //       user: {
+  //         ...sendForm.user,
+  //         email: userEmail
+  //       }
+  //     }
+  //     setSendForm(newForm);
+  //   }
+
+  // }, [sendForm])
 
   function handleChange(event) {
     if (errorMes.length > 0) setErrorMes("");
@@ -147,6 +163,7 @@ const Login = ({ loginFirebase, signUpFirebase }) => {
             size="small"
             placeholder="Enter your email"
             name="email"
+            value={sendForm?.user?.email}
             fullWidth={true}
             error={checkError}
             onChange={handleChange}

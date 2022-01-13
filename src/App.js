@@ -4,7 +4,7 @@ import { HashRouter, Switch } from 'react-router-dom';
 import { routes } from "./routes";
 import { connect } from "react-redux";
 import { authenticate } from './actions/UserActions';
-import { collection, limit, onSnapshot, orderBy, query, where } from "firebase/firestore";
+import { collection, onSnapshot, orderBy, query, where } from "firebase/firestore";
 import { getFS } from "./firebase";
 import { useDispatch } from 'react-redux';
 import Snackbar from '@mui/material/Snackbar';
@@ -45,9 +45,11 @@ function App({ authenticate, userId, snackNotify }) {
       snap.docChanges().forEach((change) => {
         if (change.type === 'added') {
           let roomId = change.doc.id;
-          onSnapshot(query(collection(getFS, `chats/${roomId}/messages`), orderBy('createdAt', 'desc'), limit(1)), (snap) => {
-            const lastMessage = snap.docs[snap.docs.length - 1].data();
-            dispatch({ type: SEND_MESSAGE_SUCCESS, payload: { message: lastMessage, room: roomId } })
+          onSnapshot(query(collection(getFS, `chats/${roomId}/messages`), orderBy('createdAt', 'desc')), (snap) => {
+            
+            const lastMessage = snap.docs[0].data();
+            const unCheckedMsgs = snap.docs.filter((doc) => doc.data()?.checked === false && doc.data()?.author !== userId).length;
+            dispatch({ type: SEND_MESSAGE_SUCCESS, payload: { message: lastMessage, room: roomId, hasUncheckedMsgs:  unCheckedMsgs} })
           })
         }
       })

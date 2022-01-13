@@ -2,7 +2,7 @@ import { connect } from 'react-redux';
 import Messages from '../components/Messages';
 import { getUser, getMessenger } from '../selectors/CommonSelectors';
 
-import {createNewMessage, fetchMoreMessages, initMessages} from '../actions/MessengerActions'
+import {createNewMessage, fetchMoreMessages, initMessages, checkedAllMsgs} from '../actions/MessengerActions'
 
 const mapStateToProps = (state) => {
   return {
@@ -11,4 +11,9 @@ const mapStateToProps = (state) => {
   }
 }
 
-export default connect(mapStateToProps, {createNewMessage, fetchMoreMessages, initMessages})(Messages)
+export default connect(mapStateToProps, {
+  createNewMessage, 
+  fetchMoreMessages, 
+  initMessages,
+  checkedAllMsgs
+})(Messages)

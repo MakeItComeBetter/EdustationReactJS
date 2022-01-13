@@ -22,7 +22,8 @@ const Messages = ({
   fetchMoreMessages,
   initMessages,
   currentRoom,
-  friends
+  friends,
+  checkedAllMsgs
 }) => {
   const { id } = useParams();
   const [onSend, setOnSend] = useState(false);
@@ -54,7 +55,7 @@ const Messages = ({
     setUserChatting(currentRoom?.membersDetails.find((e) => e?.uid !== currentUser?.uid));
   }, [currentRoom, currentUser])
 
-  
+
   return (
     <Grid container>
       <Grid item xs={12} className='msgs__header'>
@@ -81,7 +82,7 @@ const Messages = ({
       </Grid>
       <Grid item xs={12} className='msgs__container' id="scrollableDiv"
         style={{
-          height:  currentMessages?.length > 0 ? 540 : 'auto'
+          height: currentMessages?.length > 0 ? 500 : 'auto'
         }}>
 
         {/*Put the scroll bar always on the bottom*/}
@@ -105,12 +106,12 @@ const Messages = ({
                     v?.author === currentUser.uid ?
                       <div className="msgs__curUsrMsg">
                         <span className="msgs__curUsrMsg_content">
-                          {v.message}
+                          {v?.message}
                         </span>
                       </div> :
                       <div className="msgs__anoUsrMsg">
                         <span className="msgs__anoUsrMsg_content">
-                          {v.message}
+                          {v?.message}
                         </span>
                       </div>
 
@@ -131,10 +132,10 @@ const Messages = ({
                 <strong><h3>{userChatting?.displayName}</h3></strong>
                 {
                   friends?.filter((e) => e?.uid === userChatting?.uid).length > 0 ?
-                  <span>This user is your friend.</span> :
-                  <div>
-                    <button>Add Friend</button>
-                  </div>
+                    <span>This user is your friend.</span> :
+                    <div>
+                      <button>Add Friend</button>
+                    </div>
                 }
               </div>
           }
@@ -155,7 +156,11 @@ const Messages = ({
           onChange={(e) => handleChange(e)}
           value={inputVal}
           autoComplete='off'
-          id="input_message" onFocus={() => setOnSend(true)}
+          id="input_message" onFocus={() => {
+            checkedAllMsgs(currentUser, id, currentMessages);
+            setOnSend(true);
+          }
+          }
           onBlur={(e) => {
             if (e.target.value) return
             if (!e.target.value) setOnSend(false)

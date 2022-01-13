@@ -13,6 +13,7 @@ import InfiniteScroll from 'react-infinite-scroll-component';
 import CircularProgress from '@mui/material/CircularProgress';
 import Tooltip from '@mui/material/Tooltip';
 import Delete from '@mui/icons-material/Delete';
+import StyledBadge from '../components/StyledBadge';
 
 const Messenger = ({
   currentUser,
@@ -67,7 +68,14 @@ const Messenger = ({
         {
           friends.map((v, i) => (
             <div className="messenger__friend" key={i} onClick={() => createRoomByMembers(navigate, currentUser?.uid, [v, { displayName: currentUser?.displayName, photoURL: currentUser?.photoURL, uid: currentUser?.uid }], [v?.uid, currentUser?.uid])}>
-              <Avatar sx={{ width: 45, height: 45 }} src={v?.photoURL} alt={v?.displayName} />
+              <StyledBadge
+                overlap="circular"
+                anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+                variant="dot"
+              >
+                <Avatar sx={{ width: 45, height: 45 }} src={v?.photoURL} alt={v?.displayName} />
+
+              </StyledBadge>
               <small>{v?.displayName}</small>
             </div>
           ))

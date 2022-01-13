@@ -5,11 +5,13 @@ import {
   UPDATE_MESSENGER,
   FETCH_MORE_MESSAGES,
   SEND_MESSAGE_SUCCESS,
-  UPDATE_MESSAGES,
+  INIT_MESSAGES,
   UPDATE_CURRENT_ROOM,
   FETCH_MORE_ROOMS,
   UPDATE_NEW_ROOM,
-  DELETE_ROOM
+  DELETE_ROOM,
+  HAS_UNCHECKED_MSG,
+  CHECKED_ALL_MSGS
 } from '../constance/ActionTypes';
 
 const initialState = {
@@ -17,7 +19,8 @@ const initialState = {
   currentMessages: [],
   lastVisible: null,
   rooms: [],
-  lastVisibleRoom: null
+  lastVisibleRoom: null,
+  hasUncheckedMsgs: 0
 }
 
 export default function messenger(state = initialState, { type, payload }) {
@@ -66,24 +69,49 @@ export default function messenger(state = initialState, { type, payload }) {
         lastVisible: payload?.lastVisible
       }
     case SEND_MESSAGE_SUCCESS:
+      let existed = state.currentMessages.filter((e) => e?.id === payload?.message?.id).length > 0;
+      let newMessage = payload?.message;
+      let newMsgs;
       if (payload?.room === state.currentRoom?.roomId) {
-        state.currentMessages.unshift(payload.message);
+
+        if (existed) {
+          newMsgs = state.currentMessages.filter((e) => e?.id !== newMessage?.id);
+          newMsgs.unshift(newMessage);
+          state.currentMessages = [...newMsgs];
+        } else {
+          state.currentMessages.unshift(payload.message);
+        }
+
       }
       return {
         ...state,
-        currentMessages: [...state.currentMessages]
+        currentMessages: [...state.currentMessages],
+        hasUncheckedMsgs: payload?.hasUncheckedMsgs
       }
-    case UPDATE_MESSAGES:
+    case INIT_MESSAGES:
       return {
         ...state,
         currentMessages: payload.messages,
         lastVisible: payload?.lastVisible
+      }
+    case CHECKED_ALL_MSGS:
+      let newCurMgs = [];
+      state.currentMessages.map((e) => newCurMgs.push({ ...e, checked: true }))
+      return {
+        ...state,
+        currentMessages: newCurMgs,
+        
       }
     case CLEAR_MESSAGES:
       return {
         ...state,
         currentMessages: [],
         lastVisible: null
+      }
+    case HAS_UNCHECKED_MSG:
+      return {
+        ...state,
+        hasUncheckedMsgs: payload?.hasUncheckedMsgs
       }
     default:
       return state;

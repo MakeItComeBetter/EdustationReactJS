@@ -4,7 +4,6 @@ import { logOut, getPublicUsers } from '../actions/UserActions';
 import { getUser } from '../selectors/CommonSelectors';
 import {
   addFriendForUser,
-  // createNewNotification
 } from '../firebase';
 import { createNewNotification } from '../actions/NotificationActions'
 import { createRoomByMembers } from '../actions/MessengerActions';

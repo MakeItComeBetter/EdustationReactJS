@@ -93,16 +93,10 @@ const Nav = ({ currentUser }) => {
         </Grid>
         <Grid item xs={2} className="nav__cart">
           <Link to={USER_PATH} replace>
-
-            {/* <Badge variant="dot" color="error" > */}
-            {/* <ShoppingCartIcon color="action" /> */}
-
             <Avatar alt={displayName} sx={{
               width: 33,
               height: 33
             }} src={currentUser?.photoURL ? currentUser?.photoURL : ""} />
-
-            {/* </Badge> */}
           </Link>
         </Grid>
       </Hidden>

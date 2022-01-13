@@ -1,11 +1,13 @@
 import React from 'react';
-import { 
+import {
   // Avatar, 
-  Grid } from '@mui/material';
+  Grid
+} from '@mui/material';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { 
+import {
   // faHome, 
-  faBell, faComments } from "@fortawesome/free-solid-svg-icons";
+  faBell, faComments
+} from "@fortawesome/free-solid-svg-icons";
 import { Link } from 'react-router-dom';
 import Badge from '@mui/material/Badge';
 
@@ -15,25 +17,27 @@ import {
 
 const BottomMenu = ({
   hasNotifications,
-  notifications
+  notifications,
+  hasUncheckedMsgs
 }) => {
 
   return (
     <Grid container className="bottom__menu">
       <Grid item xs={12} className="bottom__menu_list">
-        <Link to={NOTIFICATIONS_PATH}>
+        <div>
           <Badge badgeContent={notifications.filter((e) => e?.checked !== true)?.length} color="error">
-            <FontAwesomeIcon icon={faBell} />
+            <Link to={NOTIFICATIONS_PATH}>
+              <FontAwesomeIcon icon={faBell} />
+            </Link>
           </Badge>
-        </Link>
-        {/* <Avatar sx={{ color: 'black' }}>
-          <FontAwesomeIcon icon={faHome} />
-        </Avatar> */}
-        <Link to={MESSENGER_PATH} replace>
-          <Badge badgeContent={notifications.filter((e) => e?.checked !== true)?.length} color="error">
-            <FontAwesomeIcon icon={faComments} />
+        </div>
+        <div>
+          <Badge badgeContent={hasUncheckedMsgs} color="error">
+            <Link to={MESSENGER_PATH} replace>
+              <FontAwesomeIcon icon={faComments} />
+            </Link>
           </Badge>
-        </Link>
+        </div>
       </Grid>
     </Grid>
   )
