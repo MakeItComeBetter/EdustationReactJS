@@ -82,7 +82,7 @@ const Messages = ({
       </Grid>
       <Grid item xs={12} className='msgs__container' id="scrollableDiv"
         style={{
-          height: currentMessages?.length > 0 ? 500 : 'auto'
+          height: currentMessages?.length > 0 ? window.innerHeight - 110 : 'auto'
         }}>
 
         {/*Put the scroll bar always on the bottom*/}
