@@ -47,7 +47,7 @@ function App({ authenticate, userId, snackNotify }) {
           let roomId = change.doc.id;
           onSnapshot(query(collection(getFS, `chats/${roomId}/messages`), orderBy('createdAt', 'desc')), (snap) => {
             
-            const lastMessage = snap.docs[0].data();
+            const lastMessage = snap.docs[0]?.data();
             const unCheckedMsgs = snap.docs.filter((doc) => doc.data()?.checked === false && doc.data()?.author !== userId).length;
             dispatch({ type: SEND_MESSAGE_SUCCESS, payload: { message: lastMessage, room: roomId, hasUncheckedMsgs:  unCheckedMsgs} })
           })
