@@ -3,6 +3,7 @@ import { Button, Grid } from '@mui/material';
 import { HOME_PATH } from '../constance/urlPath';
 import { Link } from 'react-router-dom';
 import withAuthenticated from '../components/HOCs/withAuthenticated';
+import { LazyLoadImage } from 'react-lazy-load-image-component';
 
 
 
@@ -11,7 +12,12 @@ const StartScreen = () => {
     <Grid container spacing={1} className="home">
       <Grid item sm={12} xs={12}>
         <div className="home_theme">
-          <img src="https://firebasestorage.googleapis.com/v0/b/edustation-2f482.appspot.com/o/images%2Fkisspng-penguin-madagascar-rico-clip-art-happy-feet-5ac4f76dbc5c13.7798480015228578377715.png?alt=media&token=757cc9c6-12f1-4c1a-96b2-1fea754525bb" alt="start_img" className="home_image_start" />
+          <LazyLoadImage
+            alt={'start_image'}
+            effect='blur'
+            className='home_image_start'
+            src={'https://firebasestorage.googleapis.com/v0/b/edustation-2f482.appspot.com/o/images%2Fkisspng-penguin-madagascar-rico-clip-art-happy-feet-5ac4f76dbc5c13.7798480015228578377715.png?alt=media&token=757cc9c6-12f1-4c1a-96b2-1fea754525bb'} // use normal <img> attributes as props
+          />
           <div className="home_theme_content">
             <p><span>Bạn đã sẵn sàng chưa?</span></p>
             <p>

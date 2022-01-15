@@ -41,17 +41,36 @@ function App({ authenticate, userId, snackNotify }) {
     const q = query(collection(getFS, `chats`), where('members', 'array-contains', `${userId}`), orderBy('createdAt', 'desc'))
     const unsubscribeRooms = onSnapshot(q, (snap) => {
 
-
+      let roomHasChanged = [];
       snap.docChanges().forEach((change) => {
+
+
         if (change.type === 'added') {
           let roomId = change.doc.id;
           onSnapshot(query(collection(getFS, `chats/${roomId}/messages`), orderBy('createdAt', 'desc')), (snap) => {
             
             const lastMessage = snap.docs[0]?.data();
             const unCheckedMsgs = snap.docs.filter((doc) => doc.data()?.checked === false && doc.data()?.author !== userId).length;
-            dispatch({ type: SEND_MESSAGE_SUCCESS, payload: { message: lastMessage, room: roomId, hasUncheckedMsgs:  unCheckedMsgs} })
+
+            if (roomHasChanged?.length > 0){
+
+              if (roomHasChanged.filter((e) => e.room === roomId).length > 0){
+                roomHasChanged = roomHasChanged.filter((e) => e.room !== roomId);
+                roomHasChanged.push({room: roomId, hasUncheckedMsgs: unCheckedMsgs});
+              }else {
+                roomHasChanged.push({room: roomId, hasUncheckedMsgs: unCheckedMsgs});
+              }
+
+            }else {
+              roomHasChanged.push({room: roomId, hasUncheckedMsgs: unCheckedMsgs});
+            }
+            dispatch({ type: SEND_MESSAGE_SUCCESS, payload: { message: lastMessage, room: roomId, roomsWithHasUnCheckMsg:  roomHasChanged} });
+
           })
+
         }
+
+        
       })
     })
 

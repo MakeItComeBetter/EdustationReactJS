@@ -20,3 +20,5 @@ export const COMMUNITY_PATH = '/community';
 export const NOTIFICATIONS_PATH = '/notifications';
 
 export const FRIENDS_PATH = '/friends'
+// export const MAP_PATH = '/map'
+

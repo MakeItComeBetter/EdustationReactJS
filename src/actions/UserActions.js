@@ -17,8 +17,11 @@ import {
 } from '../firebase';
 import { collection, 
   deleteDoc, 
+  doc, 
   getDocs, 
   query, 
+  setDoc, 
+  getDoc,
   where } from 'firebase/firestore';
 
 import {
@@ -31,12 +34,14 @@ import {
   deleteUser
 } from "firebase/auth";
 
-const loginSuccess = user => ({ type: LOGIN_SUCCESS, payload: { user } });
+const loginSuccess = user => ({ type: LOGIN_SUCCESS, payload: {user: user} });
 const clearUser = () => ({ type: CLEAR_USER });
 const addUserIdToApp = userId => ({ type: ADD_USER_TO_APP, payload: { userId } })
 
 export const logOut = () => async dispatch => {
   await auth.signOut();
+  const {currentUser} = auth;
+  setUserIsOnline(currentUser, true)
   dispatch(clearUser());
 };
 
@@ -44,12 +49,20 @@ export const authenticate = () => async (dispatch) => {
   return auth.onAuthStateChanged(user => {
     if (user) {
       dispatch(loginSuccess(user));
-      dispatch(addUserIdToApp(user?.uid))
+      dispatch(addUserIdToApp(user?.uid));
+      setUserIsOnline(user, true);
     } else {
+      setUserIsOnline(user, false)
       dispatch(clearUser());
     }
   })
 };
+
+const setUserIsOnline = (currentUser, isOnline) => {
+  setDoc(doc(getFS, `users/${currentUser?.uid}`), {
+    isOnline: isOnline
+  })
+}
 
 export const loginFirebase = (navigator, email, password) => dispatch => {
   let user = null;
@@ -170,12 +183,20 @@ export const getUserFriends = (currentUser) => dispatch => {
 
   getDocs(collection(getFS, `users/${currentUser?.uid}/friends`))
     .then(res => {
-      res.forEach(e => {
-        friends.push(e.data())
-      });
+      res.forEach((v) => {
+
+        getDoc(doc(getFS, `users/${v?.data()?.uid}`))
+          .then((m) => {
+            let friend = {
+              ...v?.data(),
+              isOnline: m?.data()?.isOnline ? true : false
+            }
+            friends.push(friend);
+          }).catch((e) => console.log("Fail to check user online.", e.message))
+      })
+      dispatch({ type: FETCH_FRIENDS, payload: { friends: friends } })
     })
     .then(() => {
-      dispatch({ type: FETCH_FRIENDS, payload: { friends: friends } })
     })
 
     .catch(e => console.error(e.messages))

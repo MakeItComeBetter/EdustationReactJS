@@ -8,7 +8,7 @@ import BottomMenu from './BottomMenu';
 import { Grid } from '@mui/material';
 
 
-const Home = ({ hasNotifications, notifications ,hasUncheckedMsgs}) => {
+const Home = ({ hasNotifications, notifications, roomsWithHasUnCheckMsg}) => {
 
   return (
     <Grid container>
@@ -26,7 +26,7 @@ const Home = ({ hasNotifications, notifications ,hasUncheckedMsgs}) => {
       <Grid item xs={12}>
         <Widget2 icon={<FontAwesomeIcon icon={faBook} />} title="Tra từ điển" content="Tra cứu bất cừ cụm từ nào và kiểm tra phát âm của bạn." />
       </Grid>
-      <BottomMenu hasNotifications={hasNotifications} notifications={notifications} hasUncheckedMsgs={hasUncheckedMsgs} />
+      <BottomMenu hasNotifications={hasNotifications} notifications={notifications} roomsWithHasUnCheckMsg={roomsWithHasUnCheckMsg} />
     </Grid>
   )
 }

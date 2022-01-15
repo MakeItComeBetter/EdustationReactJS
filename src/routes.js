@@ -26,6 +26,8 @@ const MessagesContainer = lazy(() => import('./containers/MessagesContainer'));
 const CommunityContainer = lazy(() => import('./containers/CommunityContainer'));
 const NotificationsContainer = lazy(() => import('./containers/NotificationsContainer'));
 const FriendsContainer = lazy(() => import('./containers/FriendsContainer'));
+// const MapContainer = lazy(() => import('./containers/MapContainer'));
+
 
 const TestContainer = lazy(() => import('./containers/TestContainer'));
 
@@ -99,6 +101,11 @@ export const routes = [
     layout: PublicLayout,
     component: NotificationsContainer
   },
+  // {
+  //   path: MAP_PATH,
+  //   layout: PublicLayout,
+  //   component: MapContainer
+  // },
   {
     path: '/test',
     layout: PublicLayout,
