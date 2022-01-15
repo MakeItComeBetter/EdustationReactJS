@@ -20,7 +20,8 @@ import {
   CLEAR_MESSAGES,
   FETCH_MORE_ROOMS,
   DELETE_ROOM,
-  CHECKED_ALL_MSGS
+  CHECKED_ALL_MSGS,
+  ON_SNACK
 } from '../constance/ActionTypes';
 import { getFS } from "../firebase";
 
@@ -111,7 +112,6 @@ export const checkedAllMsgs = (currentUser, roomId, currentMessages = []) => dis
           ...e.data(),
           checked: true
         }).then(() => {
-          console.log(`seen ${e.id}`)
         })
       })
     }).then(() => {
@@ -196,5 +196,8 @@ export const deleteRoom = (roomId) => dispatch => {
   deleteDoc(doc(getFS, `chats/${roomId}`))
     .then(() => {
       dispatch({ type: DELETE_ROOM, payload: { roomId } })
+    })
+    .then(() => {
+      dispatch({type: ON_SNACK, payload: {message: `Deleted ${roomId}`}})
     })
 }

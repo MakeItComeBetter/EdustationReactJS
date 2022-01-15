@@ -10,7 +10,6 @@ import {
   FETCH_MORE_ROOMS,
   UPDATE_NEW_ROOM,
   DELETE_ROOM,
-  HAS_UNCHECKED_MSG,
   CHECKED_ALL_MSGS
 } from '../constance/ActionTypes';
 
@@ -20,7 +19,7 @@ const initialState = {
   lastVisible: null,
   rooms: [],
   lastVisibleRoom: null,
-  hasUncheckedMsgs: 0
+  roomsWithHasUnCheckMsg: []
 }
 
 export default function messenger(state = initialState, { type, payload }) {
@@ -86,7 +85,7 @@ export default function messenger(state = initialState, { type, payload }) {
       return {
         ...state,
         currentMessages: [...state.currentMessages],
-        hasUncheckedMsgs: payload?.hasUncheckedMsgs
+        roomsWithHasUnCheckMsg: payload?.roomsWithHasUnCheckMsg
       }
     case INIT_MESSAGES:
       return {
@@ -107,11 +106,6 @@ export default function messenger(state = initialState, { type, payload }) {
         ...state,
         currentMessages: [],
         lastVisible: null
-      }
-    case HAS_UNCHECKED_MSG:
-      return {
-        ...state,
-        hasUncheckedMsgs: payload?.hasUncheckedMsgs
       }
     default:
       return state;

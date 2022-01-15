@@ -1,11 +1,9 @@
 import React from 'react';
 import {
-  // Avatar, 
   Grid
 } from '@mui/material';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {
-  // faHome, 
   faBell, faComments
 } from "@fortawesome/free-solid-svg-icons";
 import { Link } from 'react-router-dom';
@@ -18,8 +16,16 @@ import {
 const BottomMenu = ({
   hasNotifications,
   notifications,
-  hasUncheckedMsgs
+  roomsWithHasUnCheckMsg
 }) => {
+
+  const getUncheckedMsgsTotal = (list = []) => {
+    let count = 0;
+    list?.forEach((e) => {
+      count += e?.hasUncheckedMsgs
+    })
+    return count;
+  }
 
   return (
     <Grid container className="bottom__menu">
@@ -32,7 +38,7 @@ const BottomMenu = ({
           </Badge>
         </div>
         <div>
-          <Badge badgeContent={hasUncheckedMsgs} color="error">
+          <Badge badgeContent={getUncheckedMsgsTotal(roomsWithHasUnCheckMsg)} color="error">
             <Link to={MESSENGER_PATH} replace>
               <FontAwesomeIcon icon={faComments} />
             </Link>
