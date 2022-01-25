@@ -18,27 +18,31 @@ const Messages = ({
   currentUser,
   createNewMessage,
   currentMessages,
-  lastVisible,
+  lastVisibleMsg,
   fetchMoreMessages,
   initMessages,
-  currentRoom,
   friends,
-  checkedAllMsgs
+  checkedAllMsgs,
+  clearCurrentRoomData,
+  currentUserChatting
 }) => {
   const { id } = useParams();
   const [onSend, setOnSend] = useState(false);
   const [loading, setLoading] = useState(false);
   const [inputVal, setInputVal] = useState('');
-  const [userChatting, setUserChatting] = useState(null);
 
   useEffect(() => {
-    initMessages(id);
-  }, [id, initMessages])
+    initMessages(id, currentUser);
+  }, [id, initMessages, currentUser])
+
+  useEffect(() => {
+    checkedAllMsgs(currentUser, id, currentMessages);
+  }, [checkedAllMsgs, currentMessages, id, currentUser])
 
 
   const fetchMore = async () => {
     setLoading(true);
-    const result = await fetchMoreMessages(id, lastVisible, currentMessages);
+    const result = await fetchMoreMessages(id, lastVisibleMsg, currentMessages);
     setLoading(!result)
   }
 
@@ -51,23 +55,21 @@ const Messages = ({
     setInputVal(e.target.value);
   }
 
-  useEffect(() => {
-    setUserChatting(currentRoom?.membersDetails.find((e) => e?.uid !== currentUser?.uid));
-  }, [currentRoom, currentUser])
+  
 
 
   return (
     <Grid container>
       <Grid item xs={12} className='msgs__header'>
         <Grid item xs={8} className='msgs__header_first'>
-          <Link to={MESSENGER_PATH} replace className='msgs__icon'>
+          <Link to={MESSENGER_PATH} replace className='msgs__icon' onClick={() => clearCurrentRoomData()}>
             <IconButton>
               <FontAwesomeIcon icon={faChevronLeft} />
             </IconButton>
           </Link>
-          <Avatar src={userChatting?.photoURL} alt='' sx={{ width: 38, height: 38, margin: 1 }} />
+          <Avatar src={currentUserChatting?.photoURL} alt='' sx={{ width: 38, height: 38, margin: 1 }} />
           <div className='msgs__header_in4'>
-            <strong>{userChatting?.displayName}</strong>
+            <strong>{currentUserChatting?.displayName}</strong>
             <small>Active now</small>
           </div>
         </Grid>
@@ -125,13 +127,13 @@ const Messages = ({
                 justifyContent: 'center',
                 alignItems: 'center'
               }}>
-                <Avatar src={userChatting?.photoURL} sx={{
+                <Avatar src={currentUserChatting?.photoURL} sx={{
                   width: 120,
                   height: 120
                 }} />
-                <strong><h3>{userChatting?.displayName}</h3></strong>
+                <strong><h3>{currentUserChatting?.displayName}</h3></strong>
                 {
-                  friends?.filter((e) => e?.uid === userChatting?.uid).length > 0 ?
+                  friends?.filter((e) => e?.uid === currentUserChatting?.uid).length > 0 ?
                     <span>This user is your friend.</span> :
                     <div>
                       <button>Add Friend</button>
@@ -157,7 +159,6 @@ const Messages = ({
           value={inputVal}
           autoComplete='off'
           id="input_message" onFocus={() => {
-            checkedAllMsgs(currentUser, id, currentMessages);
             setOnSend(true);
           }
           }

@@ -1,4 +1,11 @@
 .home {
+
+  &__container {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+
   padding-top: 10px;
   &__carousel {
     font-size: 18px;

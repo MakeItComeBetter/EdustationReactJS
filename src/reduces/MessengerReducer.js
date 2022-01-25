@@ -10,17 +10,17 @@ import {
   FETCH_MORE_ROOMS,
   UPDATE_NEW_ROOM,
   DELETE_ROOM,
-  HAS_UNCHECKED_MSG,
   CHECKED_ALL_MSGS
 } from '../constance/ActionTypes';
 
 const initialState = {
   currentRoom: null,
   currentMessages: [],
-  lastVisible: null,
+  currentUserChatting: null,
+  lastVisibleMsg: null,
   rooms: [],
   lastVisibleRoom: null,
-  hasUncheckedMsgs: 0
+  roomsWithHasUnCheckMsg: []
 }
 
 export default function messenger(state = initialState, { type, payload }) {
@@ -66,7 +66,7 @@ export default function messenger(state = initialState, { type, payload }) {
       return {
         ...state,
         currentMessages: payload.messages,
-        lastVisible: payload?.lastVisible
+        lastVisibleMsg: payload?.lastVisible
       }
     case SEND_MESSAGE_SUCCESS:
       let existed = state.currentMessages.filter((e) => e?.id === payload?.message?.id).length > 0;
@@ -86,13 +86,14 @@ export default function messenger(state = initialState, { type, payload }) {
       return {
         ...state,
         currentMessages: [...state.currentMessages],
-        hasUncheckedMsgs: payload?.hasUncheckedMsgs
+        roomsWithHasUnCheckMsg: payload?.roomsWithHasUnCheckMsg
       }
     case INIT_MESSAGES:
       return {
         ...state,
         currentMessages: payload.messages,
-        lastVisible: payload?.lastVisible
+        lastVisibleMsg: payload?.lastVisible,
+        currentUserChatting: state.currentRoom?.membersDetails.find((e) => e?.uid !== payload?.currentUser?.uid)
       }
     case CHECKED_ALL_MSGS:
       let newCurMgs = [];
@@ -105,13 +106,9 @@ export default function messenger(state = initialState, { type, payload }) {
     case CLEAR_MESSAGES:
       return {
         ...state,
+        currentRoom: null,
         currentMessages: [],
-        lastVisible: null
-      }
-    case HAS_UNCHECKED_MSG:
-      return {
-        ...state,
-        hasUncheckedMsgs: payload?.hasUncheckedMsgs
+        lastVisibleMsg: null
       }
     default:
       return state;

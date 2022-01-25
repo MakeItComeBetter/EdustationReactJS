@@ -1,7 +1,6 @@
 import React from 'react';
-const Test = ({ currentUser, currentMessages, fetchMoreMessages, lastVisible, initMessages
-  
-}) => {
+import withWrapperLoading from './HOCs/withWrapperLoading';
+const Test = () => {
 
   
 
@@ -12,4 +11,4 @@ const Test = ({ currentUser, currentMessages, fetchMoreMessages, lastVisible, in
   )
 }
 
-export default Test
+export default withWrapperLoading(Test)

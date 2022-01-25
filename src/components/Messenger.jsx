@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import withAuthenticated from './HOCs/withAuthenticated';
-import { Avatar, Grid, IconButton, InputBase } from '@mui/material';
+import { Avatar, Badge, Grid, IconButton, InputBase } from '@mui/material';
 import { Link } from 'react-router-dom';
 import { PeopleAlt, Public } from '@mui/icons-material';
 import { COMMUNITY_PATH, FRIENDS_PATH, HOME_PATH } from '../constance/urlPath';
@@ -23,7 +23,8 @@ const Messenger = ({
   fetchMoreRooms,
   createRoomByMembers,
   initRooms,
-  deleteRoom
+  deleteRoom,
+  roomsWithHasUnCheckMsg
 }) => {
   let navigate = useHistory();
   useEffect(() => {
@@ -42,15 +43,17 @@ const Messenger = ({
     setLoading(!result)
   }
 
+  // const filterRooms = () => {
 
+  // }
 
 
   return (
     <Grid container className="messenger">
       <HeaderSection title='Chats' link={HOME_PATH} iconAction={<FontAwesomeIcon icon={faSearch} />} />
-      <Grid item xs={12} className='friends'>
+      <Grid item xs={12}className='friends'>
         <InputBase type="text"
-
+          value=''
           fullWidth={true}
           autoComplete='off'
           className='friends__search'
@@ -64,20 +67,25 @@ const Messenger = ({
           }
         />
       </Grid>
-      <Grid item xs={12} className="messenger__friends">
+      <Grid item xs={12}className="messenger__friends">
         {
           friends.map((v, i) => (
-            <div className="messenger__friend" key={i} onClick={() => createRoomByMembers(navigate, currentUser?.uid, [v, { displayName: currentUser?.displayName, photoURL: currentUser?.photoURL, uid: currentUser?.uid }], [v?.uid, currentUser?.uid])}>
-              <StyledBadge
-                overlap="circular"
-                anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
-                variant="dot"
-              >
-                <Avatar sx={{ width: 45, height: 45 }} src={v?.photoURL} alt={v?.displayName} />
+            <React.Fragment key={i} >
+              {
+                v?.isOnline ?
+                  <div className="messenger__friend" onClick={() => createRoomByMembers(navigate, currentUser?.uid, [v, { displayName: currentUser?.displayName, photoURL: currentUser?.photoURL, uid: currentUser?.uid }], [v?.uid, currentUser?.uid])}>
+                    <StyledBadge
+                      overlap="circular"
+                      anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+                      variant="dot"
+                    >
+                      <Avatar sx={{ width: 45, height: 45 }} src={v?.photoURL} alt={v?.displayName} />
 
-              </StyledBadge>
-              <small>{v?.displayName}</small>
-            </div>
+                    </StyledBadge>
+                    <small>{v?.displayName}</small>
+                  </div> : ""
+              }
+            </React.Fragment>
           ))
         }
       </Grid>
@@ -100,10 +108,12 @@ const Messenger = ({
               <div className="messenger__widget" key={i}>
                 <Link to={`messages/${v?.roomId}`}>
                   <div className='messenger__widget_main'>
-                    <Avatar sx={{ width: 45, height: 45 }} src={
-                      v?.membersDetails.find((e) => e?.uid !== currentUser?.uid)?.photoURL
-                    } />
-
+                    <Badge badgeContent={roomsWithHasUnCheckMsg.find((e) => e.room === v?.roomId)?.hasUncheckedMsgs}
+                      color="error">
+                      <Avatar sx={{ width: 40, height: 40 }} src={
+                        v?.membersDetails.find((e) => e?.uid !== currentUser?.uid)?.photoURL
+                      } />
+                    </Badge>
                   </div>
                 </Link>
                 <Link to={`messages/${v?.roomId}`}>
@@ -124,14 +134,14 @@ const Messenger = ({
               <span style={{ textAlign: 'center' }}>No messages available</span>
           }
         </InfiniteScroll>
-        <div className="messenger__bottom">
+        <Grid item xs={12}className="messenger__bottom">
           <Link to={FRIENDS_PATH} replace>
             <PeopleAlt />
           </Link>
           <Link to={COMMUNITY_PATH} replace>
             <Public />
           </Link>
-        </div>
+        </Grid>
       </Grid>
     </Grid>
   )

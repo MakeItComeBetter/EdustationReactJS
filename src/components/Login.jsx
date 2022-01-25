@@ -6,11 +6,11 @@ import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import LockIcon from '@mui/icons-material/Lock';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Checkbox from '@mui/material/Checkbox';
-import { FORGOT_PASSWORD_PATH } from '../constance/urlPath';
+import { BASE_PATH, FORGOT_PASSWORD_PATH } from '../constance/urlPath';
 import LoadingButton from '@mui/lab/LoadingButton';
 import { useHistory } from 'react-router-dom';
 
-const Login = ({ loginFirebase, signUpFirebase }) => {
+const Login = ({ loginFirebase, signUpFirebase, loginWithFacebook, currentUser }) => {
   const navigator = useHistory();
   const [checkError, setCheckError] = useState(false);
   const [errorMes, setErrorMes] = useState("");
@@ -40,21 +40,11 @@ const Login = ({ loginFirebase, signUpFirebase }) => {
     }
   }, [checkError, ip])
 
-  // useEffect(() => {
-  //   let userEmail = window.localStorage.getItem('email');
-
-  //   if (userEmail) {
-  //     let newForm = {
-  //       ...sendForm,
-  //       user: {
-  //         ...sendForm.user,
-  //         email: userEmail
-  //       }
-  //     }
-  //     setSendForm(newForm);
-  //   }
-
-  // }, [sendForm])
+  useEffect(() => {
+      if (currentUser){
+        navigator.push(BASE_PATH)
+      }
+  }, [currentUser, navigator])
 
   function handleChange(event) {
     if (errorMes.length > 0) setErrorMes("");
@@ -143,6 +133,7 @@ const Login = ({ loginFirebase, signUpFirebase }) => {
                 size="small"
                 placeholder="Enter your username"
                 name="username"
+                value={sendForm?.user?.username ? sendForm?.user?.username : ''}
                 fullWidth={true}
                 error={checkError}
                 onChange={handleChange}
@@ -163,7 +154,7 @@ const Login = ({ loginFirebase, signUpFirebase }) => {
             size="small"
             placeholder="Enter your email"
             name="email"
-            value={sendForm?.user?.email}
+            value={sendForm?.user?.email ? sendForm?.user?.email : ''}
             fullWidth={true}
             error={checkError}
             onChange={handleChange}
@@ -180,6 +171,7 @@ const Login = ({ loginFirebase, signUpFirebase }) => {
             autoComplete="current-password"
             margin="dense"
             // variant="filled"
+            value={sendForm?.user?.password ? sendForm?.user?.password : ''}
             size="small"
             name="password"
             placeholder="Enter your password"
@@ -220,7 +212,7 @@ const Login = ({ loginFirebase, signUpFirebase }) => {
           >
             {`${onSignUp ? 'Confirm' : ' Sign in'}`}
           </LoadingButton>
-          <Grid container className="login__footer">
+          <Grid item xs={12} className="login__footer">
             <Grid item xs={6}>
               <Link to={FORGOT_PASSWORD_PATH} variant="body2">
                 Forgot password?
@@ -229,6 +221,9 @@ const Login = ({ loginFirebase, signUpFirebase }) => {
             <Grid item xs={6}>
               <span onClick={() => setOnSignUp(!onSignUp)}>{onSignUp ? "I having an account and verified this. " : "Don't have an account? Sign Up"}</span>
             </Grid>
+          </Grid>
+          <Grid item xs={12}>
+            <button type="button" onClick={() => loginWithFacebook(navigator)}>Login with facebook</button>
           </Grid>
         </form>
       </Grid>

@@ -20,7 +20,8 @@ import {
   CLEAR_MESSAGES,
   FETCH_MORE_ROOMS,
   DELETE_ROOM,
-  CHECKED_ALL_MSGS
+  CHECKED_ALL_MSGS,
+  ON_SNACK
 } from '../constance/ActionTypes';
 import { getFS } from "../firebase";
 
@@ -36,12 +37,11 @@ function createId(length) {
   return result;
 }
 
-export const initMessages = (roomId) => async dispatch => {
+export const initMessages = (roomId, currentUser) => async dispatch => {
 
   if (!roomId) return;
   const currentRoom = await getDoc(doc(getFS, `chats/${roomId}`));
   dispatch({ type: UPDATE_CURRENT_ROOM, payload: { currentRoom: currentRoom.data() } })
-  dispatch({ type: CLEAR_MESSAGES })
   if (!roomId) return;
   const first = query(collection(getFS, `chats/${roomId}/messages`), orderBy('createdAt', 'desc'), limit(15));
   const docSnapshots = await getDocs(first);
@@ -51,8 +51,12 @@ export const initMessages = (roomId) => async dispatch => {
   docSnapshots.docs.map((e) => 
     msgs.push(e.data()));
 
-  dispatch({ type: INIT_MESSAGES, payload: { messages: msgs, lastVisible: lastVisible } });
+  dispatch({ type: INIT_MESSAGES, payload: { messages: msgs, lastVisible: lastVisible, currentUser: currentUser } });
 
+}
+
+export const clearCurrentRoomData = () => dispatch => {
+  dispatch({ type: CLEAR_MESSAGES })
 }
 
 export const fetchMoreMessages = (roomId, lastVisibleState = null, currentMessages = []) => async dispatch => {
@@ -111,7 +115,6 @@ export const checkedAllMsgs = (currentUser, roomId, currentMessages = []) => dis
           ...e.data(),
           checked: true
         }).then(() => {
-          console.log(`seen ${e.id}`)
         })
       })
     }).then(() => {
@@ -196,5 +199,8 @@ export const deleteRoom = (roomId) => dispatch => {
   deleteDoc(doc(getFS, `chats/${roomId}`))
     .then(() => {
       dispatch({ type: DELETE_ROOM, payload: { roomId } })
+    })
+    .then(() => {
+      dispatch({type: ON_SNACK, payload: {message: `Deleted ${roomId}`}})
     })
 }

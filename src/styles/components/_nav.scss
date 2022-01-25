@@ -41,6 +41,9 @@
     @include mq($desktop){
       font-size: 13px;
     }
+    :hover {
+      text-decoration: underline overline;
+    }
   }
 
   &__user_actions {
@@ -76,10 +79,4 @@
     border-radius: 15px;
     color: #fff;
   }
-}
-.MuiBadge-badge {
-  font-size: 10px!important;
-  min-width: 15px!important;
-  height: 18px!important;
-  padding: 0 6px!important;
 }

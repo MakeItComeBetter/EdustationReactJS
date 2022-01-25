@@ -3,7 +3,7 @@ import {UserProfile} from '../components/';
 import { getUser } from '../selectors/CommonSelectors';
 import {logOut} from '../actions/UserActions';
 import {uploadAvatar, deleteFile, getListFiles, addUserToPublic} from '../firebase';
-import {updateCurrentUser} from '../actions/UserActions';
+import {updateCurrentUser, loginWithFacebook} from '../actions/UserActions';
 
 
 const mapStateToProps = (state) => {
@@ -12,8 +12,9 @@ const mapStateToProps = (state) => {
     uploadAvatar,
     deleteFile,
     getListFiles,
-    addUserToPublic
+    addUserToPublic,
+    
   }
 }
 
-export default connect(mapStateToProps, {logOut, updateCurrentUser} )(UserProfile)
+export default connect(mapStateToProps, {logOut, updateCurrentUser, loginWithFacebook} )(UserProfile)

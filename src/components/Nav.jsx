@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Grid, Hidden } from '@mui/material';
-import { HOME_PATH, LOGIN_PATH, USER_PATH } from '../constance/urlPath';
+import { COMMUNITY_PATH, FRIENDS_PATH, HOME_PATH, LOGIN_PATH, MESSENGER_PATH, USER_PATH } from '../constance/urlPath';
 import Avatar from '@mui/material/Avatar';
 
 
@@ -43,18 +43,18 @@ const Nav = ({ currentUser }) => {
               </Link>
             </div>
             <div className="nav__link">
-              <Link replace to="/home">
-                About
+              <Link replace to={FRIENDS_PATH}>
+                Friends
               </Link>
             </div>
             <div className="nav__link">
-              <Link replace to="/home">
-                Services
+              <Link replace to={MESSENGER_PATH}>
+                Messenger
               </Link>
             </div>
             <div className="nav__link">
-              <Link replace to="/home">
-                Blog
+              <Link  to={COMMUNITY_PATH} replace>
+                Community
               </Link>
             </div>
           </div>

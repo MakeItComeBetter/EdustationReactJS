@@ -7,7 +7,7 @@ import {
   ADD_USER_TO_APP,
   UNFRIEND,
   ON_SNACK,
-  
+
 } from '../constance/ActionTypes';
 import { BASE_PATH } from '../constance/urlPath';
 import {
@@ -15,11 +15,16 @@ import {
   getFS,
   // firebaseApp
 } from '../firebase';
-import { collection, 
-  deleteDoc, 
-  getDocs, 
-  query, 
-  where } from 'firebase/firestore';
+import {
+  collection,
+  deleteDoc,
+  doc,
+  getDocs,
+  query,
+  setDoc,
+  getDoc,
+  where
+} from 'firebase/firestore';
 
 import {
   signInWithEmailAndPassword,
@@ -28,15 +33,19 @@ import {
   createUserWithEmailAndPassword,
   updateProfile,
   sendPasswordResetEmail,
-  deleteUser
+  deleteUser,
+  signInWithRedirect,
+  FacebookAuthProvider,
 } from "firebase/auth";
 
-const loginSuccess = user => ({ type: LOGIN_SUCCESS, payload: { user } });
+const loginSuccess = user => ({ type: LOGIN_SUCCESS, payload: { user: user } });
 const clearUser = () => ({ type: CLEAR_USER });
 const addUserIdToApp = userId => ({ type: ADD_USER_TO_APP, payload: { userId } })
 
 export const logOut = () => async dispatch => {
   await auth.signOut();
+  const { currentUser } = auth;
+  setUserIsOnline(currentUser, true)
   dispatch(clearUser());
 };
 
@@ -44,12 +53,20 @@ export const authenticate = () => async (dispatch) => {
   return auth.onAuthStateChanged(user => {
     if (user) {
       dispatch(loginSuccess(user));
-      dispatch(addUserIdToApp(user?.uid))
+      dispatch(addUserIdToApp(user?.uid));
+      setUserIsOnline(user, true);
     } else {
+      setUserIsOnline(user, false)
       dispatch(clearUser());
     }
   })
 };
+
+const setUserIsOnline = (currentUser, isOnline) => {
+  setDoc(doc(getFS, `users/${currentUser?.uid}`), {
+    isOnline: isOnline
+  })
+}
 
 export const loginFirebase = (navigator, email, password) => dispatch => {
   let user = null;
@@ -76,8 +93,6 @@ export const deleteAccount = (navigator, currentUser) => {
       navigator?.push(BASE_PATH);
     })
 }
-
-
 
 export const signUpFirebase = (navigator, username, email, password) => async dispatch => {
 
@@ -136,7 +151,7 @@ export const sentForgotPassword = (email) => dispatch => {
 
 export const updateUser = (attributes) => {
   const { currentUser } = auth;
-  
+
   if (currentUser) {
     return updateProfile(currentUser, { ...attributes })
   } else {
@@ -170,12 +185,20 @@ export const getUserFriends = (currentUser) => dispatch => {
 
   getDocs(collection(getFS, `users/${currentUser?.uid}/friends`))
     .then(res => {
-      res.forEach(e => {
-        friends.push(e.data())
-      });
+      res.forEach((v) => {
+
+        getDoc(doc(getFS, `users/${v?.data()?.uid}`))
+          .then((m) => {
+            let friend = {
+              ...v?.data(),
+              isOnline: m?.data()?.isOnline ? true : false
+            }
+            friends.push(friend);
+          }).catch((e) => console.log("Fail to check user online.", e.message))
+      })
+      dispatch({ type: FETCH_FRIENDS, payload: { friends: friends } })
     })
     .then(() => {
-      dispatch({ type: FETCH_FRIENDS, payload: { friends: friends } })
     })
 
     .catch(e => console.error(e.messages))
@@ -213,7 +236,21 @@ export const unFriend = (currentUser, targetUserId) => dispatch => {
 }
 
 
+export const loginWithFacebook = (navigator) => dispatch => {
+  return signInWithRedirect(auth, new FacebookAuthProvider(),)
+    .then((result) => {
+      FacebookAuthProvider.credentialFromResult(result);
 
+    }).catch((e) => {
+      // const errorCode = e.code;
+      // const errorMessage = e.message;
+      // // The email of the user's account used.
+      // const email = errorCode.email;
+      // // The AuthCredential type that was used.
+      const credential = FacebookAuthProvider.credentialFromError(e);
+      console.error(credential)
+    })
+}
 
 
 
