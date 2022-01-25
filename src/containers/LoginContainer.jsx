@@ -1,16 +1,18 @@
 import Login from '../components/Login';
 import { connect } from 'react-redux';
-import { loginFirebase, signUpFirebase } from '../actions/UserActions';
+import { loginFirebase, signUpFirebase, loginWithFacebook } from '../actions/UserActions';
+import {getUser} from '../selectors/CommonSelectors';
 
 const mapStateToProps = state => {
 
   return {
-    ...state
+    ...getUser(state)
   };
 };
 
 export default connect(mapStateToProps, {
   loginFirebase,
   signUpFirebase,  
+  loginWithFacebook
 })(Login);
 

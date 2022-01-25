@@ -37,12 +37,11 @@ function createId(length) {
   return result;
 }
 
-export const initMessages = (roomId) => async dispatch => {
+export const initMessages = (roomId, currentUser) => async dispatch => {
 
   if (!roomId) return;
   const currentRoom = await getDoc(doc(getFS, `chats/${roomId}`));
   dispatch({ type: UPDATE_CURRENT_ROOM, payload: { currentRoom: currentRoom.data() } })
-  dispatch({ type: CLEAR_MESSAGES })
   if (!roomId) return;
   const first = query(collection(getFS, `chats/${roomId}/messages`), orderBy('createdAt', 'desc'), limit(15));
   const docSnapshots = await getDocs(first);
@@ -52,8 +51,12 @@ export const initMessages = (roomId) => async dispatch => {
   docSnapshots.docs.map((e) => 
     msgs.push(e.data()));
 
-  dispatch({ type: INIT_MESSAGES, payload: { messages: msgs, lastVisible: lastVisible } });
+  dispatch({ type: INIT_MESSAGES, payload: { messages: msgs, lastVisible: lastVisible, currentUser: currentUser } });
 
+}
+
+export const clearCurrentRoomData = () => dispatch => {
+  dispatch({ type: CLEAR_MESSAGES })
 }
 
 export const fetchMoreMessages = (roomId, lastVisibleState = null, currentMessages = []) => async dispatch => {

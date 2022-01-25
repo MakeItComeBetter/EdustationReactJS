@@ -35,7 +35,7 @@ ChartJS.register(
 
 
 
-const UserProfile = ({ currentUser, logOut, uploadAvatar, updateCurrentUser, deleteFile, getListFiles, addUserToPublic }) => {
+const UserProfile = ({ currentUser, logOut, uploadAvatar, updateCurrentUser, deleteFile, getListFiles, addUserToPublic, loginWithFacebook }) => {
 
   const [data, setData] = useState({ labels: [], datasets: [] });
   const [makePublic, setMakePublic] = useState(false);
@@ -148,7 +148,6 @@ const UserProfile = ({ currentUser, logOut, uploadAvatar, updateCurrentUser, del
             currentUser.photoURL && currentUser.displayName ?
               <button type="button" onClick={() => addUserToPublic(currentUser) & setMakePublic(makePublic === false ? true : true)}>{makePublic ? "Update Public" : "Public Profile"}</button> : ""
           }
-
         </div>
       </Grid>
       <Grid item xs={12} sm={3}>

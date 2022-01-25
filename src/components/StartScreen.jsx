@@ -16,7 +16,7 @@ const StartScreen = () => {
             alt={'start_image'}
             effect='blur'
             className='home_image_start'
-            src={'https://firebasestorage.googleapis.com/v0/b/edustation-2f482.appspot.com/o/images%2Fkisspng-penguin-madagascar-rico-clip-art-happy-feet-5ac4f76dbc5c13.7798480015228578377715.png?alt=media&token=757cc9c6-12f1-4c1a-96b2-1fea754525bb'} // use normal <img> attributes as props
+            src={'/start_img.png'} // use normal <img> attributes as props
           />
           <div className="home_theme_content">
             <p><span>Bạn đã sẵn sàng chưa?</span></p>

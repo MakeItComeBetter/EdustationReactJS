@@ -7,7 +7,7 @@ import {
   ADD_USER_TO_APP,
   UNFRIEND,
   ON_SNACK,
-  
+
 } from '../constance/ActionTypes';
 import { BASE_PATH } from '../constance/urlPath';
 import {
@@ -15,14 +15,16 @@ import {
   getFS,
   // firebaseApp
 } from '../firebase';
-import { collection, 
-  deleteDoc, 
-  doc, 
-  getDocs, 
-  query, 
-  setDoc, 
+import {
+  collection,
+  deleteDoc,
+  doc,
+  getDocs,
+  query,
+  setDoc,
   getDoc,
-  where } from 'firebase/firestore';
+  where
+} from 'firebase/firestore';
 
 import {
   signInWithEmailAndPassword,
@@ -31,16 +33,18 @@ import {
   createUserWithEmailAndPassword,
   updateProfile,
   sendPasswordResetEmail,
-  deleteUser
+  deleteUser,
+  signInWithRedirect,
+  FacebookAuthProvider,
 } from "firebase/auth";
 
-const loginSuccess = user => ({ type: LOGIN_SUCCESS, payload: {user: user} });
+const loginSuccess = user => ({ type: LOGIN_SUCCESS, payload: { user: user } });
 const clearUser = () => ({ type: CLEAR_USER });
 const addUserIdToApp = userId => ({ type: ADD_USER_TO_APP, payload: { userId } })
 
 export const logOut = () => async dispatch => {
   await auth.signOut();
-  const {currentUser} = auth;
+  const { currentUser } = auth;
   setUserIsOnline(currentUser, true)
   dispatch(clearUser());
 };
@@ -89,8 +93,6 @@ export const deleteAccount = (navigator, currentUser) => {
       navigator?.push(BASE_PATH);
     })
 }
-
-
 
 export const signUpFirebase = (navigator, username, email, password) => async dispatch => {
 
@@ -149,7 +151,7 @@ export const sentForgotPassword = (email) => dispatch => {
 
 export const updateUser = (attributes) => {
   const { currentUser } = auth;
-  
+
   if (currentUser) {
     return updateProfile(currentUser, { ...attributes })
   } else {
@@ -234,7 +236,21 @@ export const unFriend = (currentUser, targetUserId) => dispatch => {
 }
 
 
+export const loginWithFacebook = (navigator) => dispatch => {
+  return signInWithRedirect(auth, new FacebookAuthProvider(),)
+    .then((result) => {
+      FacebookAuthProvider.credentialFromResult(result);
 
+    }).catch((e) => {
+      // const errorCode = e.code;
+      // const errorMessage = e.message;
+      // // The email of the user's account used.
+      // const email = errorCode.email;
+      // // The AuthCredential type that was used.
+      const credential = FacebookAuthProvider.credentialFromError(e);
+      console.error(credential)
+    })
+}
 
 
 

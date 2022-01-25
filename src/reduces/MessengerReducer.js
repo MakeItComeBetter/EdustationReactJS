@@ -16,7 +16,8 @@ import {
 const initialState = {
   currentRoom: null,
   currentMessages: [],
-  lastVisible: null,
+  currentUserChatting: null,
+  lastVisibleMsg: null,
   rooms: [],
   lastVisibleRoom: null,
   roomsWithHasUnCheckMsg: []
@@ -65,7 +66,7 @@ export default function messenger(state = initialState, { type, payload }) {
       return {
         ...state,
         currentMessages: payload.messages,
-        lastVisible: payload?.lastVisible
+        lastVisibleMsg: payload?.lastVisible
       }
     case SEND_MESSAGE_SUCCESS:
       let existed = state.currentMessages.filter((e) => e?.id === payload?.message?.id).length > 0;
@@ -91,7 +92,8 @@ export default function messenger(state = initialState, { type, payload }) {
       return {
         ...state,
         currentMessages: payload.messages,
-        lastVisible: payload?.lastVisible
+        lastVisibleMsg: payload?.lastVisible,
+        currentUserChatting: state.currentRoom?.membersDetails.find((e) => e?.uid !== payload?.currentUser?.uid)
       }
     case CHECKED_ALL_MSGS:
       let newCurMgs = [];
@@ -104,8 +106,9 @@ export default function messenger(state = initialState, { type, payload }) {
     case CLEAR_MESSAGES:
       return {
         ...state,
+        currentRoom: null,
         currentMessages: [],
-        lastVisible: null
+        lastVisibleMsg: null
       }
     default:
       return state;

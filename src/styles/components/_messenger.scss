@@ -1,4 +1,7 @@
 .messenger {
+  display: flex;
+  flex-direction: column;
+
   &__container {
     padding: 5px;
     overflow: auto;

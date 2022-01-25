@@ -51,7 +51,7 @@ const Messenger = ({
   return (
     <Grid container className="messenger">
       <HeaderSection title='Chats' link={HOME_PATH} iconAction={<FontAwesomeIcon icon={faSearch} />} />
-      <Grid item xs={12} className='friends'>
+      <Grid item xs={12}className='friends'>
         <InputBase type="text"
           value=''
           fullWidth={true}
@@ -67,13 +67,13 @@ const Messenger = ({
           }
         />
       </Grid>
-      <Grid item xs={12} className="messenger__friends">
+      <Grid item xs={12}className="messenger__friends">
         {
           friends.map((v, i) => (
-            <React.Fragment>
+            <React.Fragment key={i} >
               {
                 v?.isOnline ?
-                  <div className="messenger__friend" key={i} onClick={() => createRoomByMembers(navigate, currentUser?.uid, [v, { displayName: currentUser?.displayName, photoURL: currentUser?.photoURL, uid: currentUser?.uid }], [v?.uid, currentUser?.uid])}>
+                  <div className="messenger__friend" onClick={() => createRoomByMembers(navigate, currentUser?.uid, [v, { displayName: currentUser?.displayName, photoURL: currentUser?.photoURL, uid: currentUser?.uid }], [v?.uid, currentUser?.uid])}>
                     <StyledBadge
                       overlap="circular"
                       anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
@@ -134,14 +134,14 @@ const Messenger = ({
               <span style={{ textAlign: 'center' }}>No messages available</span>
           }
         </InfiniteScroll>
-        <div className="messenger__bottom">
+        <Grid item xs={12}className="messenger__bottom">
           <Link to={FRIENDS_PATH} replace>
             <PeopleAlt />
           </Link>
           <Link to={COMMUNITY_PATH} replace>
             <Public />
           </Link>
-        </div>
+        </Grid>
       </Grid>
     </Grid>
   )

@@ -41,6 +41,9 @@
     @include mq($desktop){
       font-size: 13px;
     }
+    :hover {
+      text-decoration: underline overline;
+    }
   }
 
   &__user_actions {
