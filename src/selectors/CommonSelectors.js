@@ -41,3 +41,8 @@ export const getNotifications = state => state.notification;
 
 export const getMessenger = state => state.messenger;
 
+
+// dictionary
+
+export const getDictionary = state => state.dictionary;
+

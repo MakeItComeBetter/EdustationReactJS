@@ -17,7 +17,6 @@ const SectionTitle = (props) => {
                 {icon}
               </IconButton> : ""
           }
-
           <span style={{ marginLeft: 5 }}>{title}</span>
         </Grid>
       </Link>

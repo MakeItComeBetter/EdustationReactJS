@@ -1,11 +1,10 @@
 import React from 'react';
-// import CircularProgress from '@mui/material/CircularProgress';
 import { Avatar, Grid, IconButton } from '@mui/material';
 import { Link } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faChevronLeft } from "@fortawesome/free-solid-svg-icons";
 
-const HeaderSection = ({ title = 'Section title', link, iconAction, go }) => {
+const HeaderSection = ({ title = 'Section title', link = '/', iconAction, go }) => {
 
   return (
     <Grid item xs={12} className='header_section'>

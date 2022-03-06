@@ -10,7 +10,8 @@ const initialState = {
   userId: null,
   snackNotify: {
     on: false,
-    message: null
+    message: null,
+    severity: null
   }
 }
 
@@ -40,7 +41,8 @@ export default function app(state = initialState, { type, payload }) {
         snackNotify: {
           ...state.snackNotify,
           on: true,
-          message: payload?.message
+          message: payload?.message,
+          severity: payload?.severity
         }
       }
     case OFF_SNACK:
@@ -49,7 +51,8 @@ export default function app(state = initialState, { type, payload }) {
         snackNotify: {
           ...state.snackNotify,
           on: false,
-          message: null
+          message: null,
+          severity: null
         }
       }
     default:

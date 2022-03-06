@@ -181,12 +181,11 @@ export const getPublicUsers = () => dispatch => {
 
 export const getUserFriends = (currentUser) => dispatch => {
   // get friends of user
-  const friends = [];
 
   getDocs(collection(getFS, `users/${currentUser?.uid}/friends`))
     .then(res => {
       res.forEach((v) => {
-
+        const friends = [];
         getDoc(doc(getFS, `users/${v?.data()?.uid}`))
           .then((m) => {
             let friend = {
@@ -194,9 +193,11 @@ export const getUserFriends = (currentUser) => dispatch => {
               isOnline: m?.data()?.isOnline ? true : false
             }
             friends.push(friend);
-          }).catch((e) => console.log("Fail to check user online.", e.message))
+          })
+          .then(() => dispatch({ type: FETCH_FRIENDS, payload: { friends: friends } }))
+          .catch((e) => console.log("Fail to check user online.", e.message))
       })
-      dispatch({ type: FETCH_FRIENDS, payload: { friends: friends } })
+      
     })
     .then(() => {
     })
@@ -247,8 +248,8 @@ export const loginWithFacebook = (navigator) => dispatch => {
       // // The email of the user's account used.
       // const email = errorCode.email;
       // // The AuthCredential type that was used.
-      const credential = FacebookAuthProvider.credentialFromError(e);
-      console.error(credential)
+      // const credential = FacebookAuthProvider.credentialFromError(e);
+      console.error(e.message)
     })
 }
 

@@ -10,8 +10,10 @@ import { HOME_PATH,
   MESSAGES_PATH,
   COMMUNITY_PATH,
   NOTIFICATIONS_PATH,
-  FRIENDS_PATH
+  FRIENDS_PATH,
+  DICTIONARY_PATH
  } from './constance/urlPath';
+ 
 import PublicLayout from './layouts/PublicLayout'
 
 const LoginContainer = lazy(() => import('./containers/LoginContainer'));
@@ -26,7 +28,7 @@ const MessagesContainer = lazy(() => import('./containers/MessagesContainer'));
 const CommunityContainer = lazy(() => import('./containers/CommunityContainer'));
 const NotificationsContainer = lazy(() => import('./containers/NotificationsContainer'));
 const FriendsContainer = lazy(() => import('./containers/FriendsContainer'));
-// const MapContainer = lazy(() => import('./containers/MapContainer'));
+const DictionaryContainer = lazy(() => import('./containers/DictionaryContainer'));
 
 
 const TestContainer = lazy(() => import('./containers/TestContainer'));
@@ -100,6 +102,11 @@ export const routes = [
     path: NOTIFICATIONS_PATH,
     layout: PublicLayout,
     component: NotificationsContainer
+  },
+  {
+    path: DICTIONARY_PATH,
+    layout: PublicLayout,
+    component: DictionaryContainer
   },
   // {
   //   path: MAP_PATH,

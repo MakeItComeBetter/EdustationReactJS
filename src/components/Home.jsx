@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import withAuthenticated from './HOCs/withAuthenticated';
 import { Widget1, SectionTitle, Widget2 } from './index';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -6,9 +6,20 @@ import { faBook } from "@fortawesome/free-solid-svg-icons";
 import HeaderContainer from '../containers/HeaderContainer';
 import BottomMenu from './BottomMenu';
 import { Grid } from '@mui/material';
+import AlertQuestion from './shared/AlertQuestion';
 
 
-const Home = ({ hasNotifications, notifications, roomsWithHasUnCheckMsg }) => {
+const Home = ({ hasNotifications, notifications, roomsWithHasUnCheckMsg, getRandomSentence, newSentence, currentSubject, addReplyQuestion }) => {
+
+  // useEffect(() => {
+  //   console.log(newSentence)
+  // }, [newSentence])
+
+  useEffect(() => {
+    if (currentSubject){
+      getRandomSentence(currentSubject)
+    }
+  }, [currentSubject, getRandomSentence])
 
   return (
     <Grid container>
@@ -22,8 +33,16 @@ const Home = ({ hasNotifications, notifications, roomsWithHasUnCheckMsg }) => {
       </Grid>
       <SectionTitle title="Bạn muốn làm gì?" />
       <Grid item xs={12}>
-        <Widget2 icon={<FontAwesomeIcon icon={faBook} />} title="Tra từ điển" content="Tra cứu bất cừ cụm từ nào và kiểm tra phát âm của bạn." />
+        <Widget2 icon={<FontAwesomeIcon icon={faBook} />} title="Feature in development" link={''} content="Tra cứu bất cừ cụm từ nào và kiểm tra phát âm của bạn và phát triển dictionary" />
       </Grid>
+      {
+        newSentence?.question ?
+        <React.Fragment>
+        <AlertQuestion question={newSentence} subject={currentSubject} addReplyQuestion={addReplyQuestion} />
+        </React.Fragment> 
+        :
+        ''
+      }
       <BottomMenu hasNotifications={hasNotifications} notifications={notifications} roomsWithHasUnCheckMsg={roomsWithHasUnCheckMsg} />
     </Grid>
   )

@@ -20,6 +20,7 @@
     "chart.js": "^3.6.0",
     "crypto-js": "^4.1.1",
     "date-fns": "^2.26.0",
+    "dotenv": "^14.3.2",
     "firebase": "^9.6.1",
     "firebase-tools": "^9.23.3",
     "formik": "^2.2.9",
