@@ -3,7 +3,7 @@ import PublicRoute from "./layouts/PublicRoute";
 import { HashRouter, Switch } from "react-router-dom";
 import { routes } from "./routes";
 import { connect } from "react-redux";
-import { authenticate } from "./actions/UserActions";
+import { authenticate, setUserIsOnline } from "./actions/UserActions";
 import {
   collection,
   onSnapshot,
@@ -129,6 +129,19 @@ function App({ authenticate, userId, snackNotify }) {
       unsubscribeUserChanges();
     };
   }, [dispatch, userId]);
+
+  useEffect(() => {
+    window.onbeforeunload = function(e){
+      var message = 'Important: Please click on \'Save\' button to leave this page.';
+      if (typeof e == 'undefined') {
+          e = window.event;
+      }
+      if (e) {
+          e.returnValue = message;
+      }
+      return message;
+    }
+  }, [userId])
 
   const renderRoutes = useCallback((routes) => {
     let result = null;

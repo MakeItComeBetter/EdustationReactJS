@@ -45,7 +45,7 @@ const addUserIdToApp = userId => ({ type: ADD_USER_TO_APP, payload: { userId } }
 export const logOut = () => async dispatch => {
   await auth.signOut();
   const { currentUser } = auth;
-  setUserIsOnline(currentUser, true)
+  setUserIsOnline(currentUser?.uid, true)
   dispatch(clearUser());
 };
 
@@ -62,8 +62,8 @@ export const authenticate = () => async (dispatch) => {
   })
 };
 
-const setUserIsOnline = (currentUser, isOnline) => {
-  setDoc(doc(getFS, `users/${currentUser?.uid}`), {
+export const setUserIsOnline = (uid, isOnline) => {
+  setDoc(doc(getFS, `users/${uid}`), {
     isOnline: isOnline
   })
 }

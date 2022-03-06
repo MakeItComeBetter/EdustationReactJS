@@ -17,7 +17,8 @@ import {
 import {
   FETCH_MORE_NOTIFICATIONS,
   UPDATE_NOTIFICATION_SUCCESS,
-  UPDATE_NOTIFICATIONS
+  UPDATE_NOTIFICATIONS,
+  ON_SNACK
 } from '../constance/ActionTypes';
 
 
@@ -36,7 +37,7 @@ function createId(length) {
 
 export const initNotifications = (currentUser) => async dispatch => {
   let msgs = [];
-  const first = query(collection(getFS, `notifications/${currentUser?.uid}/messages`), orderBy('createdAt'), limit(10))
+  const first = query(collection(getFS, `notifications/${currentUser?.uid}/messages`), orderBy('createdAt'), limit(20))
   const docSnapshots = await getDocs(first);
   const lastVisible = docSnapshots.docs[docSnapshots.docs.length - 1];
   docSnapshots.forEach((e) => msgs.push(e.data()));
@@ -52,7 +53,7 @@ export const fetchMoreNotifications = (currentUser, currentNotifications = [], l
   const next = query(collection(getFS, `notifications/${currentUser?.uid}/messages`),
     orderBy("createdAt", 'desc'),
     startAfter(lastVisibleState),
-    limit(10));
+    limit(20));
   const nexDocSnapshots = await getDocs(next);
   const newLastVisible = nexDocSnapshots.docs[nexDocSnapshots.docs.length - 1];
   if (!newLastVisible) return true;
@@ -82,7 +83,7 @@ export const updateNotifications = (notificationId, targetUserUid, attributes) =
 
 }
 
-export const createNewNotification = (currentUser, targetUserUid, msg) => {
+export const createNewNotification = (currentUser, targetUserUid, msg) => dispatch => {
   if (!targetUserUid || !currentUser || !msg) return;
   let newID = createId(currentUser?.uid?.length);
   const notificationPath = `notifications/${targetUserUid}/messages`;
@@ -94,6 +95,7 @@ export const createNewNotification = (currentUser, targetUserUid, msg) => {
       if (res?.docs.length > 0) {
         res.forEach((e) => {
           if (e?.data().typeAction === msg?.typeAction) {
+            dispatch({type: ON_SNACK, payload: {message: 'Requested!', severity: 'success'}});
             return;
           } else {
             setDoc(doc(getFS, notificationPath, newID),
@@ -114,7 +116,12 @@ export const createNewNotification = (currentUser, targetUserUid, msg) => {
                 },
                 createdAt: Date.now()
               }
-            ).catch((e) => console.error(e.message))
+            )
+            .then(() => {
+              dispatch({type: ON_SNACK, payload: {message: 'Requested!', severity: 'success'}})
+
+            })
+            .catch((e) => console.error(e.message))
 
           }
         })
@@ -137,7 +144,10 @@ export const createNewNotification = (currentUser, targetUserUid, msg) => {
             },
             createdAt: Date.now()
           }
-        ).catch((e) => console.error(e.message))
+        ).then(() => {
+          dispatch({type: ON_SNACK, payload: {message: 'Requested!', severity: 'success'}})
+        })
+        .catch((e) => console.error(e.message))
 
       }
 

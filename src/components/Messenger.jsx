@@ -43,11 +43,6 @@ const Messenger = ({
     setLoading(!result)
   }
 
-  // const filterRooms = () => {
-
-  // }
-
-
   return (
     <Grid container className="messenger">
       <HeaderSection title='Chats' link={HOME_PATH} iconAction={<FontAwesomeIcon icon={faSearch} />} />
