@@ -3,7 +3,7 @@ import PublicRoute from "./layouts/PublicRoute";
 import { HashRouter, Switch } from "react-router-dom";
 import { routes } from "./routes";
 import { connect } from "react-redux";
-import { authenticate, setUserIsOnline } from "./actions/UserActions";
+import { authenticate } from "./actions/UserActions";
 import {
   collection,
   onSnapshot,

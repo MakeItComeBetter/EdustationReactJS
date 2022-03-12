@@ -1,7 +1,7 @@
 import { connect } from 'react-redux';
 import Dictionary from '../components/dictionary/Dictionary';
 import { getDictionary, getUser } from '../selectors/CommonSelectors';
-import {addNewWord, addNewSentence} from '../actions/DictionaryActions';
+import {addNewWord, addNewSentence, searchDictionary, clearSearchResult} from '../actions/DictionaryActions';
 
 
 const mapStateToProps = state => {
@@ -13,5 +13,7 @@ const mapStateToProps = state => {
 
 export default connect(mapStateToProps, {
   addNewWord,
-  addNewSentence
+  addNewSentence,
+  searchDictionary,
+  clearSearchResult
 })(Dictionary);

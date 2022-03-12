@@ -13,6 +13,7 @@ import {
   GET_NEW_SENTENCE,
   CLEAR_CURRENT_QUESTION,
   ON_SNACK,
+  SET_SEARCH_RESULT,
 } from "../constance/ActionTypes";
 
 // make an ID
@@ -31,7 +32,7 @@ export const addNewWord = (word, author, subject) => (dispatch) => {
   if (!word || !author || !subject) {
     dispatch({
       type: ON_SNACK,
-      payload: { message: "Failed to add new word success", severity: 'error' },
+      payload: { message: "Failed to add new word success", severity: "error" },
     });
     return;
   }
@@ -41,11 +42,14 @@ export const addNewWord = (word, author, subject) => (dispatch) => {
     .then(() => {
       dispatch({
         type: ON_SNACK,
-        payload: { message: "Add new word success", severity: 'success' },
+        payload: { message: "Add new word success", severity: "success" },
       });
     })
     .catch(() =>
-      dispatch({ type: ON_SNACK, payload: { message: "Add new word fail", severity: 'error' } })
+      dispatch({
+        type: ON_SNACK,
+        payload: { message: "Add new word fail", severity: "error" },
+      })
     );
 };
 
@@ -53,25 +57,27 @@ export const addNewSentence = (sentence, subject, author) => (dispatch) => {
   if (!sentence || !subject || !author) {
     dispatch({
       type: ON_SNACK,
-      payload: { message: "Failed to add new sentence", severity: 'error' },
+      payload: { message: "Failed to add new sentence", severity: "error" },
     });
     return;
   }
   let newID = createId(author?.uid?.length);
-  setDoc(
-    doc(getFS, `/dictionaries/${subject}/sentences`, newID),
-    sentence
-  ).then(() => {
-    dispatch({
-      type: ON_SNACK,
-      payload: { message: "Add new sentence success", severity: 'success' },
+  setDoc(doc(getFS, `/dictionaries/${subject}/sentences`, newID), sentence)
+    .then(() => {
+      dispatch({
+        type: ON_SNACK,
+        payload: { message: "Add new sentence success", severity: "success" },
+      });
+    })
+    .catch((e) => {
+      dispatch({
+        type: ON_SNACK,
+        payload: {
+          message: "Failed to add new sentence success",
+          severity: "error",
+        },
+      });
     });
-  }).catch((e) => {
-    dispatch({
-      type: ON_SNACK,
-      payload: { message: "Failed to add new sentence success", severity: 'error' },
-    });
-  })
 };
 
 export const getRandomSentence = (subject) => (dispatch) => {
@@ -102,6 +108,8 @@ export const getRandomSentence = (subject) => (dispatch) => {
   });
 };
 
+export const getRememberWord = () => (dispatch) => {};
+
 export const addReplyQuestion = (idQuestion, subject, answer) => (dispatch) => {
   if (!idQuestion || !answer || !subject) return;
 
@@ -113,17 +121,47 @@ export const addReplyQuestion = (idQuestion, subject, answer) => (dispatch) => {
     setDoc(docRef, {
       ...doc.data(),
       answers: answers,
-    }).then(() => {
-      dispatch({ type: CLEAR_CURRENT_QUESTION });
-      dispatch({
-        type: ON_SNACK,
-        payload: { message: "Send success", severity: 'success' },
-      });
-    }).catch(() => {
-      dispatch({
-        type: ON_SNACK,
-        payload: { message: "Failed reply :(", severity: 'error' },
-      });
     })
+      .then(() => {
+        dispatch({ type: CLEAR_CURRENT_QUESTION });
+        dispatch({
+          type: ON_SNACK,
+          payload: { message: "Send success", severity: "success" },
+        });
+      })
+      .catch(() => {
+        dispatch({
+          type: ON_SNACK,
+          payload: { message: "Failed reply :(", severity: "error" },
+        });
+      });
   });
+};
+
+export const searchDictionary = (word) => (dispatch) => {
+  if (!word) return;
+
+  fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${word}`, {
+    headers: {
+      "Content-Type": "application/json",
+    },
+    method: "GET",
+  })
+    .then((res) => res.json())
+    .then((data) =>
+      {
+        if (data?.length > 0){
+          dispatch({ type: SET_SEARCH_RESULT, payload: { wordResult: data } })
+        }else {
+          dispatch({type: ON_SNACK, payload: {message: 'Not found information for this word :(',severity: 'warning' }})
+        }
+      }
+    )
+    .catch((e) => {
+      dispatch({type: ON_SNACK, payload: {message: 'Failed to search information for this word :(', severity: 'error'}})
+    });
+};
+
+export const clearSearchResult = () => (dispatch) => {
+  dispatch({ type: SET_SEARCH_RESULT });
 };
