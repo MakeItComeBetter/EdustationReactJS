@@ -8,6 +8,7 @@ import { LazyLoadImage } from 'react-lazy-load-image-component';
 
 
 const StartScreen = () => {
+
   return (
     <Grid container spacing={1} className="home">
       <Grid item sm={12} xs={12}>
