@@ -42,3 +42,10 @@ export const ADD_FRIEND = 'ADD_FRIEND';
 
 export const OFF_SNACK = 'OFF_SNACK';
 export const ON_SNACK = 'OFF_SNACK'
+
+
+//dictionary 
+export const GET_NEW_SENTENCE = 'GET_NEW_SENTENCE';
+export const SET_CURRENT_SUBJECT = 'SET_CURRENT_SUBJECT';
+export const CLEAR_CURRENT_QUESTION = 'CLEAR_CURRENT_QUESTION';
+export const SET_SEARCH_RESULT = 'SET_SEARCH_RESULT';

@@ -18,7 +18,7 @@ export default function notifications(state = initialState, { type, payload }) {
     case FETCH_MORE_NOTIFICATIONS:
       return {
         ...state,
-        notifications: payload.notifications,
+        notifications: state.notifications.concat(payload.notifications).sort((a, b) => a?.createdAt - b?.createdAt),
         lastVisible: payload.lastVisible
       }
     case PUSH_NEW_NOTIFICATION:

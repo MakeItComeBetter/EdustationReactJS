@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Grid } from '@mui/material';
+import { Button, Grid } from '@mui/material';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import { Box } from '@mui/system';
 import HeaderSection from './HeaderSection';
@@ -57,7 +57,7 @@ const Notifications = ({
               notifications.map((v, index) => (
                 <Box key={index}
                   sx={{
-                    backgroundColor: v?.checked ? '' : '#77A7FF',
+                    backgroundColor: v?.checked ? '' : '#ccdcf9',
 
                   }}
                 >
@@ -74,7 +74,14 @@ const Notifications = ({
                            !v?.pending ?
                             "" :
                             <React.Fragment>
-                              <button onClick={() => {
+                              <Button variant='outlined'
+                              color='success'
+                              size='small'
+                              sx={{
+                                borderRadius: '20px !important',
+                                zIndex: 1
+                              }}
+                              onClick={() => {
                                 switch (v?.typeAction) {
                                   case 'ADD_FRIEND':
                                     addFriendForUser(currentUser, v?.author)
@@ -89,8 +96,15 @@ const Notifications = ({
                                     break;
 
                                 }
-                              }}>Accept</button>
-                              <button
+                              }}>Accept</Button>
+                              <Button 
+                              variant='outlined'
+                              color='error'
+                              size='small'
+                                sx={{
+                                  borderRadius: '20px !important',
+                                  zIndex: 1
+                                }}
                                 onClick={() => {
                                   switch (v?.typeAction) {
                                     case 'ADD_FRIEND':
@@ -105,7 +119,7 @@ const Notifications = ({
 
                                   }
                                 }}
-                              >Cancel</button>
+                              >Cancel</Button>
                             </React.Fragment>
                         }
                       </div> : ""

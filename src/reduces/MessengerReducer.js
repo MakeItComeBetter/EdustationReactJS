@@ -96,11 +96,15 @@ export default function messenger(state = initialState, { type, payload }) {
         currentUserChatting: state.currentRoom?.membersDetails.find((e) => e?.uid !== payload?.currentUser?.uid)
       }
     case CHECKED_ALL_MSGS:
-      let newCurMgs = [];
-      state.currentMessages.map((e) => newCurMgs.push({ ...e, checked: true }))
+      let currentMessages = state?.currentMessages;
+      for(let i; i< currentMessages.length; i ++){
+        if (currentMessages[i] && currentMessages[i]?.author !== payload?.currentUser?.uid){
+          currentMessages[i].checked = true;
+        }
+      }
       return {
         ...state,
-        currentMessages: newCurMgs,
+        currentMessages: state.currentMessages,
         
       }
     case CLEAR_MESSAGES:

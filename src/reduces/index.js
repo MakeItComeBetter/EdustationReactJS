@@ -6,6 +6,7 @@ import UserReducer from './UserReducer';
 import ExampleReducer from './ExampleReducer';
 import MessengerReducer from './MessengerReducer';
 import NotificationReducer from './NotificationReducer';
+import DictionaryReducer from './DictionaryReducer';
 
 
 // import profileReducer from './ProfileReducer';
@@ -17,5 +18,6 @@ export default combineReducers({
   user: UserReducer,
   exam: ExampleReducer,
   messenger: MessengerReducer,
-  notification: NotificationReducer
+  notification: NotificationReducer,
+  dictionary: DictionaryReducer
 });

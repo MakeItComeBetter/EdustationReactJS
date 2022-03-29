@@ -43,15 +43,14 @@ import {
   push
 } from 'firebase/database'
 
-
 const firebaseConfig = {
-  apiKey: "AIzaSyD5BidsXAqtSmsKgaGYQpwyV3W6EkEGAFc",
-  authDomain: "edustation-2f482.firebaseapp.com",
-  projectId: "edustation-2f482",
-  storageBucket: "edustation-2f482.appspot.com",
-  messagingSenderId: "41478612240",
-  appId: "1:41478612240:web:4175a65cc2a14b9ce67195",
-  measurementId: "G-BC8WS6STZS"
+  apiKey: process.env.REACT_APP_API_KEY,
+  authDomain: process.env.REACT_APP_AUTH_DOMAIN,
+  projectId: process.env.REACT_APP_PROJECT_ID,
+  storageBucket: process.env.REACT_APP_STORAGE_BUCKET,
+  messagingSenderId: process.env.REACT_APP_MESSAGING_SENDER_ID,
+  appId: process.env.REACT_APP_APP_ID,
+  measurementId: process.env.REACT_APP_MEASUREMENT_ID
 };
 
 export const firebaseApp = initializeApp(firebaseConfig);

@@ -7,5 +7,7 @@ export { default as SectionTitle } from './SectionTitle';
 export { default as Subject } from './Subject';
 export { default as Community } from './Community';
 export { default as Notifications } from './Notifications';
+export { default as Dictionary } from './dictionary/Dictionary';
+
 
 

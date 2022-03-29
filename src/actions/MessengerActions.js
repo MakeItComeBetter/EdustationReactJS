@@ -43,7 +43,7 @@ export const initMessages = (roomId, currentUser) => async dispatch => {
   const currentRoom = await getDoc(doc(getFS, `chats/${roomId}`));
   dispatch({ type: UPDATE_CURRENT_ROOM, payload: { currentRoom: currentRoom.data() } })
   if (!roomId) return;
-  const first = query(collection(getFS, `chats/${roomId}/messages`), orderBy('createdAt', 'desc'), limit(15));
+  const first = query(collection(getFS, `chats/${roomId}/messages`), orderBy('createdAt', 'desc'), limit(20));
   const docSnapshots = await getDocs(first);
   const lastVisible = docSnapshots.docs[docSnapshots.docs.length - 1];
   if (!lastVisible) return;
@@ -65,7 +65,7 @@ export const fetchMoreMessages = (roomId, lastVisibleState = null, currentMessag
   const next = query(collection(getFS, `chats/${roomId}/messages`),
     orderBy("createdAt", 'desc'),
     startAfter(lastVisibleState),
-    limit(10));
+    limit(20));
   const nexDocSnapshots = await getDocs(next);
   const newLastVisible = nexDocSnapshots.docs[nexDocSnapshots.docs.length - 1];
   if (!newLastVisible) return true;
@@ -83,6 +83,7 @@ export const createNewMessage = (roomId, message, authorId) => dispatch => {
     message: message,
     author: authorId,
     checked: false,
+    attachmentUrl: null,
     createdAt: Date.now()
   }
   // dispatch({ type: SEND_MESSAGE_SUCCESS, payload: { message: newMsg } })
@@ -118,7 +119,7 @@ export const checkedAllMsgs = (currentUser, roomId, currentMessages = []) => dis
         })
       })
     }).then(() => {
-      dispatch({ type: CHECKED_ALL_MSGS })
+      dispatch({ type: CHECKED_ALL_MSGS, payload: {currentUser} })
     })
 }
 

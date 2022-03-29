@@ -114,6 +114,11 @@
     border-radius: 8px;
     background-color: #fff!important;
   }
+
+  &_btn_non_bgrd {
+    border: 0;
+    border-radius: 8px;
+  }
   &_track {
     display: flex;
     
