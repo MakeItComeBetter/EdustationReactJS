@@ -46,3 +46,7 @@ export const getMessenger = state => state.messenger;
 
 export const getDictionary = state => state.dictionary;
 
+// web3
+
+export const getWeb3 = state => state.web3;
+
